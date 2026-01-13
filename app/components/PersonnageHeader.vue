@@ -22,12 +22,7 @@
           <p class="text-stone-600 text-sm mt-1 font-montserrat">{{ personnage.ecole || 'Sans école' }} • Rang {{ personnage.rang }}</p>
         </div>
       </div>
-      <button
-        @click="$emit('deselect')"
-        class="bg-gradient-to-b from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 text-amber-50 border-2 border-red-950 px-6 py-3 rounded-lg font-bold transition-all duration-300 whitespace-nowrap shadow-lg"
-      >
-        ← Changer de personnage
-      </button>
+      <BackButton @click="$emit('deselect')">← Changer de personnage</BackButton>
     </div>
   </div>
 </template>

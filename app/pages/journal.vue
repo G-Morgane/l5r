@@ -15,12 +15,7 @@
       <div class="mb-8 flex-shrink-0 w-full">
         <div class="flex items-center justify-between mb-6">
           <h1 class="text-5xl font-bold text-white font-sakurata drop-shadow-lg">📖 Journal de bord</h1>
-          <NuxtLink 
-            to="/"
-            class="px-4 py-2 rounded-xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 ring-offset-2 ring-offset-transparent shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden bg-white"
-          >
-            <span class="text-red-800 font-bold relative z-10 font-katana">← Retour</span>
-          </NuxtLink>
+          <BackButton @click="$router.push('/')" class="mb-0" blanc>← Retour</BackButton>
         </div>
 
         <!-- Bouton créer nouvelle entrée et Barre de recherche -->

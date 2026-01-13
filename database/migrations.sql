@@ -171,3 +171,43 @@ BEGIN
     CREATE POLICY "Permettre écriture publique ressources" ON ressources FOR ALL USING (true);
   END IF;
 END $$;
+
+-- Créer la table des cartes
+CREATE TABLE IF NOT EXISTS maps (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  image_url TEXT,
+  grid_cols INTEGER NOT NULL,
+  grid_rows INTEGER NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- Créer la table des emplacements sur la carte
+CREATE TABLE IF NOT EXISTS map_locations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  map_id UUID REFERENCES maps(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  location_type VARCHAR(50) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  grid_col INTEGER NOT NULL,
+  grid_row INTEGER NOT NULL,
+  notes TEXT,
+  color VARCHAR(7),
+  icon VARCHAR(100),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- Index
+CREATE INDEX IF NOT EXISTS idx_map_locations_map_id ON map_locations(map_id);
+
+-- RLS
+ALTER TABLE maps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE map_locations ENABLE ROW LEVEL SECURITY;
+
+-- Politiques
+CREATE POLICY "Permettre lecture publique maps" ON maps FOR SELECT USING (true);
+CREATE POLICY "Permettre écriture publique maps" ON maps FOR ALL USING (true);
+CREATE POLICY "Permettre lecture publique map_locations" ON map_locations FOR SELECT USING (true);
+CREATE POLICY "Permettre écriture publique map_locations" ON map_locations FOR ALL USING (true);

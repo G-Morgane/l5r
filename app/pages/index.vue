@@ -121,13 +121,24 @@
             title="Sorts"
             description="Magie et rituels"
           />
+          <NavigationCard
+            link="/carte"
+            emoji="🗺"
+            title="Carte"
+            description="Map de Rokugan"
+          />
+           <NavigationCard
+            link="/intrigues"
+            emoji="🕵️"
+            title="Intrigues"
+            description="Enquêtes en cours"
+          />
             <NavigationCard
             link="/histoire"
             emoji="📜"
             title="Histoire"
             description="Chronologie et récits"
           />
-          
         </div>
       </div>
     </div>

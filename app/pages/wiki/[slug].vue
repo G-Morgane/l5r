@@ -16,12 +16,7 @@
         <div class="flex items-center justify-between mb-6">
           <h1 class="text-5xl font-bold text-white font-sakurata drop-shadow-lg">📖 {{ item.nom }}</h1>
           <div class="flex gap-4">
-            <NuxtLink 
-              to="/wiki"
-              class="px-4 py-2 rounded-xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 ring-offset-2 ring-offset-transparent shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden bg-white"
-            >
-              <span class="text-red-800 font-bold relative z-10 font-katana">← Retour au Wiki</span>
-            </NuxtLink>
+            <BackButton @click="$router.push('/wiki')" class="mb-0" blanc>← Retour au Wiki</BackButton>
             <button 
               @click="supprimerItem"
               class="px-4 py-2 rounded-xl border-2 border-red-800/60 ring-4 ring-red-900/30 ring-offset-2 ring-offset-transparent shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden bg-white"
@@ -33,9 +28,41 @@
 
         <!-- Catégorie badge -->
         <div class="mb-6">
-          <span class="inline-block px-4 py-2 rounded-xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-amber-100 font-katana font-bold text-stone-900">
-            {{ categories.find(c => c.id === item.categorie)?.emoji }} {{ categories.find(c => c.id === item.categorie)?.nom }}
-          </span>
+          <div v-if="!modeEditionCategorie" class="flex items-center gap-3">
+            <button 
+              @click="modeEditionCategorie = true; nouvelleCategorie = item.categorie"
+              class="inline-block px-4 py-2 rounded-xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-amber-100 hover:bg-amber-200 transition-all font-katana font-bold text-stone-900 cursor-pointer"
+              title="Cliquer pour modifier la catégorie"
+            >
+              {{ categories.find(c => c.id === item.categorie)?.emoji }} {{ categories.find(c => c.id === item.categorie)?.nom }}
+            </button>
+          </div>
+          
+          <!-- Sélecteur de catégorie en mode édition -->
+          <div v-else class="flex items-center gap-3">
+            <select 
+              v-model="nouvelleCategorie"
+              class="bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-2 transition-all outline-none text-stone-900 font-montserrat shadow-sm"
+            >
+              <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                {{ cat.emoji }} {{ cat.nom }}
+              </option>
+            </select>
+            <div class="flex gap-2">
+              <button 
+                @click="enregistrerCategorie"
+                class="px-3 py-2 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 rounded-xl font-bold transition-all duration-300 shadow-lg text-amber-50 font-katana text-sm"
+              >
+                💾
+              </button>
+              <button 
+                @click="annulerEditionCategorie"
+                class="px-3 py-2 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30 rounded-xl font-semibold transition-all duration-300 text-stone-800 font-katana text-sm"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -56,8 +83,8 @@
           <div v-if="!modeEdition" class="prose max-w-none">
             <div 
               v-if="item.description" 
-              v-html="item.description" 
-              class="text-stone-800 font-montserrat"
+              v-html="formatDescription(item.description)" 
+              class="text-stone-800 font-montserrat flex flex-col gap-4"
             ></div>
             <p v-else class="text-stone-500 italic font-montserrat">Aucune description pour le moment...</p>
           </div>
@@ -209,6 +236,8 @@ const router = useRouter()
 const item = ref(null)
 const description = ref('')
 const modeEdition = ref(false)
+const modeEditionCategorie = ref(false)
+const nouvelleCategorie = ref('')
 const entreesLiees = ref([])
 const nouveauTag = ref('')
 const afficherSuggestions = ref(false)
@@ -260,6 +289,7 @@ const chargerItem = async () => {
   if (data) {
     item.value = data
     description.value = data.description || ''
+    nouvelleCategorie.value = data.categorie
     chargerItemsLies()
   } else {
     navigateTo('/wiki')
@@ -325,6 +355,23 @@ const enregistrerDescription = async () => {
 const annulerEdition = () => {
   description.value = item.value.description || ''
   modeEdition.value = false
+}
+
+const enregistrerCategorie = async () => {
+  const { error } = await client
+    .from('wiki_items')
+    .update({ categorie: nouvelleCategorie.value })
+    .eq('id', item.value.id)
+  
+  if (!error) {
+    item.value.categorie = nouvelleCategorie.value
+    modeEditionCategorie.value = false
+  }
+}
+
+const annulerEditionCategorie = () => {
+  nouvelleCategorie.value = item.value.categorie
+  modeEditionCategorie.value = false
 }
 
 const supprimerItem = async () => {
@@ -422,6 +469,20 @@ const retirerTag = async (index) => {
 
 const filtrerSuggestions = () => {
   afficherSuggestions.value = true
+}
+
+const formatDescription = (text) => {
+  if (!text) return ''
+  
+  // Convertir les retours à la ligne en <br>
+  let formatted = text.replace(/\n/g, '<br>')
+  
+  // Convertir les espaces multiples en espaces non-breaking pour préserver la mise en forme
+  formatted = formatted.replace(/  +/g, (match) => {
+    return '&nbsp;'.repeat(match.length)
+  })
+  
+  return formatted
 }
 
 const getWikiItemByName = (nom) => {

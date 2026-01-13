@@ -1,3 +1,5 @@
+import type { PersonnageRow } from '~/utils/types'
+
 export const usePersonnageActif = () => {
-  return useState('personnageActif', () => null)
+  return useState<PersonnageRow | null>('personnageActif', () => null)
 }
