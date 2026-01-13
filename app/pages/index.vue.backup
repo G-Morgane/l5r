@@ -83,7 +83,12 @@
 
         <!-- Cartes de navigation style parchemin -->
         <div class="relative">
-          <div class="flex justify-around items-center gap-2 overflow-x-auto relative z-10 py-12 px-4">
+          <img
+            src="/fond_bouton.png"
+            alt="Parchemin"
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+          />
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 relative z-10">
             <NavigationCard
               link="/journal"
               emoji="📖"

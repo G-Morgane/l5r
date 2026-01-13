@@ -12,10 +12,12 @@ export default defineNuxtConfig({
     },
   },
   css: ['@/assets/css/global.css'],
-  head: {
-    link: [
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap' }
-    ]
+  app: {
+    head: {
+      link: [
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap' }
+      ]
+    }
   },
   tailwindcss: {
     config: {

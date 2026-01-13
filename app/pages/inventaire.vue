@@ -14,7 +14,7 @@
     <!-- Fond image japonaise -->
     <div class="absolute inset-0">
       <img
-        src="/background_selection.png"
+        src="/background.png"
         alt="Japanese room background"
         class="w-full h-full object-cover"
       />

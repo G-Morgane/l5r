@@ -1,20 +1,31 @@
 <template>
-  <div class="rounded-xl p-8 mb-12 border-2 border-amber-800/60 ring-4 ring-amber-900/30 ring-offset-2 ring-offset-transparent shadow-2xl relative overflow-hidden">
-    <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
-    <div class="absolute inset-0 bg-amber-50/30"></div>
+  <div class="rounded-xl py-24 px-20 mb-12 relative overflow-hidden w-full max-w-7xl mx-auto" style="min-height: 320px;">
+    <div class="absolute inset-0" style="background-image: url('/parchemin_header.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"></div>
     
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-      <div class="flex items-center gap-6">
-        <div 
-          v-if="personnage.nom === 'Shiba Shizuku'"
-          class="w-24 h-24 rounded-full shadow-xl border-4 border-red-800 overflow-hidden bg-cover bg-center"
-          style="background-image: url('/shizuku.png');"
-        ></div>
-        <div 
-          v-else
-          class="w-24 h-24 bg-gradient-to-br from-stone-700 via-stone-600 to-stone-800 rounded-full flex items-center justify-center text-4xl font-black text-amber-100 shadow-xl border-4 border-red-800"
-        >
-          {{ personnage.nom[0] }}
+  <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" style="position:relative; top:-50px;">
+      <div class="flex items-center gap-10">
+        <div class="relative flex items-center justify-center w-40 h-40">
+          <img
+            src="/cadre_perso.png"
+            alt="Cadre cercle"
+            class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10"
+            draggable="false"
+          />
+          <div class="rounded-full overflow-hidden w-34 h-34 bg-stone-200 flex items-center justify-center z-0">
+            <img
+              v-if="personnage.nom === 'Shiba Shizuku'"
+              src="/shizuku.png"
+              alt="Portrait du personnage"
+              class="object-cover w-full h-full"
+            />
+            <span
+              v-else
+              class="flex items-center justify-center w-full h-full text-6xl font-bold text-amber-900 select-none"
+              style="user-select: none;"
+            >
+              {{ personnage.nom[0] }}
+            </span>
+          </div>
         </div>
         <div>
           <h2 class="text-4xl font-black text-stone-900 mb-2 font-sakurata">{{ personnage.nom }}</h2>
