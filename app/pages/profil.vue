@@ -3,28 +3,24 @@
     <!-- Fond image japonaise -->
     <div class="absolute inset-0">
       <img 
-        src="https://i.pinimg.com/736x/16/3c/1c/163c1cd8722f4b2b0d3314dfd80512f3.jpg" 
+        src="/fond_long.png" 
         alt="Japanese room background" 
-        class="w-full h-full object-cover"
+        class="w-full h-full object-contain object-top"
       />
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
     
     <div class="container mx-auto px-4 py-8 relative z-10">
       <!-- En-tête -->
-      <ProfilHeader />
-
       <div v-if="!personnageActif">
         <ProfilNoCharacter />
       </div>
-
       <div v-else class="max-w-7xl mx-auto">
         <!-- En-tête personnage -->
         <PersonnageHeader 
           :personnage="personnageActif"
-          @deselect="() => personnageActif = null"
+          @deselect="() => navigateTo('/')"
         />
-
         <!-- Section principale : Anneaux + Stats -->
         <div class="space-y-6 mb-6">
           <!-- Ligne 1 : Tous les cercles -->
@@ -879,27 +875,4 @@ const xpDetails = computed(() => {
 </script>
 
 <style scoped>
-/* Ajout d'un style pour le cadre des sections */
-.rounded-xl {
-  position: relative;
-  overflow: hidden;
-}
-
-.rounded-xl::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/cadre.png');
-  background-size: 250%;
-  background-position: center;
-  z-index: 1;
-}
-
-.rounded-xl > * {
-  position: relative;
-  z-index: 2;
-}
 </style>

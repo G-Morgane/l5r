@@ -1,66 +1,84 @@
 <template>
-  <MapCanvas
-    v-if="map"
-    :map="map"
-    :locations="locations"
-    :available-maps="availableMaps"
-    :selected-map-id="selectedMapId"
-    :show-all-locations="showAllLocations"
-    @cellClick="handleCellClick"
-    @markerClick="handleMarkerClick"
-    @deleteLocation="handleDeleteLocation"
-    @mapChange="handleMapChange"
-    @toggleShowAllLocations="toggleShowAllLocations"
-    @createNewMap="createNewMap"
-  />
-
-    <!-- Modal for location -->
-    <div v-if="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 font-montserrat" @click.self="modalOpen = false">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
-        <h3 class="text-xl font-bold mb-4">{{ editing ? 'Modifier le point d\'intérêt' : 'Ajouter un point d\'intérêt' }}</h3>
-        <form @submit.prevent="handleSave">
-          <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Nom</label>
-            <input v-model="form.name" type="text" class="w-full border rounded px-3 py-2" required />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Type</label>
-            <select v-model="form.location_type" class="w-full border rounded px-3 py-2">
-              <option value="city">Ville</option>
-              <option value="village">Village</option>
-              <option value="temple">Temple</option>
-              <option value="shrine">Sanctuaire</option>
-              <option value="port">Port</option>
-              <option value="enemy_bastion">Bastion ennemis</option>
-              <option value="other">Autre</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Statut</label>
-            <select v-model="form.status" class="w-full border rounded px-3 py-2">
-              <option value="rumor">Rumeur</option>
-              <option value="known">Connu</option>
-              <option value="visited">Visité</option>
-              <option value="secret">Secret</option>
-              <option value="forbidden">Interdit</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Notes</label>
-            <textarea v-model="form.notes" class="w-full border rounded px-3 py-2" rows="3"></textarea>
-          </div>
-          <div class="flex justify-end space-x-2">
-            <button type="button" @click="modalOpen = false" class="px-4 py-2 bg-gray-300 rounded">Annuler</button>
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Sauvegarder</button>
-          </div>
-        </form>
-      </div>
+  <div class="relative overflow-hidden">
+    <!-- Fond image japonaise -->
+    <div class="absolute inset-0" style="background-image: url('/fond_long.png'), url('/bas_fond.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
+      <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
+    <div class="container mx-auto px-4 py-8 relative z-10">
+      <!-- En-tête personnage -->
+      <PersonnageHeader 
+          :personnage="personnageActif || {}"
+          @deselect="changeCharacter()"
+        />
+
+      <div class="flex flex-col">
+        <!-- Contenu existant -->
+        <MapCanvas
+          v-if="map"
+          :map="map"
+          :locations="locations"
+          :available-maps="availableMaps"
+          :selected-map-id="selectedMapId"
+          :show-all-locations="showAllLocations"
+          @cellClick="handleCellClick"
+          @markerClick="handleMarkerClick"
+          @deleteLocation="handleDeleteLocation"
+          @mapChange="handleMapChange"
+          @toggleShowAllLocations="toggleShowAllLocations"
+          @createNewMap="createNewMap"
+        />
+
+        <!-- Modal for location -->
+        <div v-if="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 font-montserrat" @click.self="modalOpen = false">
+          <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">{{ editing ? 'Modifier le point d\'intérêt' : 'Ajouter un point d\'intérêt' }}</h3>
+            <form @submit.prevent="handleSave">
+              <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nom</label>
+                <input v-model="form.name" type="text" class="w-full border rounded px-3 py-2" required />
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Type</label>
+                <select v-model="form.location_type" class="w-full border rounded px-3 py-2">
+                  <option value="city">Ville</option>
+                  <option value="village">Village</option>
+                  <option value="temple">Temple</option>
+                  <option value="shrine">Sanctuaire</option>
+                  <option value="port">Port</option>
+                  <option value="enemy_bastion">Bastion ennemis</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Statut</label>
+                <select v-model="form.status" class="w-full border rounded px-3 py-2">
+                  <option value="rumor">Rumeur</option>
+                  <option value="known">Connu</option>
+                  <option value="visited">Visité</option>
+                  <option value="secret">Secret</option>
+                  <option value="forbidden">Interdit</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Notes</label>
+                <textarea v-model="form.notes" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+              </div>
+              <div class="flex justify-end space-x-2">
+                <button type="button" @click="modalOpen = false" class="px-4 py-2 bg-gray-300 rounded">Annuler</button>
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Sauvegarder</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script setup lang="ts">
 import type { MapRow, MapLocationRow } from '~/utils/types'
 const supabase = useSupabaseClient()
+const personnageActif = usePersonnageActif()
 
 const map = ref<MapRow | null>(null)
 const availableMaps = ref<MapRow[]>([])
@@ -273,6 +291,10 @@ function handleMapChange(mapId: string) {
 
 function toggleShowAllLocations() {
   showAllLocations.value = !showAllLocations.value
+}
+
+const changeCharacter = () => {
+  navigateTo('/')
 }
 </script>
 

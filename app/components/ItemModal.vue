@@ -145,13 +145,13 @@
               :key="tag.id"
               @click="toggleTag(tag)"
               type="button"
-              class="px-3 py-1 rounded-full text-sm font-medium transition-colors"
+              class="px-3 py-1 rounded-full text-sm font-medium transition-colors font-montserrat"
               :class="selectedTags.includes(tag.id) ? 'ring-2 ring-offset-1' : 'hover:opacity-80'"
               :style="{
-                backgroundColor: tag.color + '20',
-                color: tag.color,
-                border: `1px solid ${tag.color}`,
-                '--tw-ring-color': tag.color
+                backgroundColor: getTypeColor(tag.name) || '#d1d5db',
+                color: '#374151',
+                border: `1px solid ${getTypeColor(tag.name) || '#d1d5db'}`,
+                '--tw-ring-color': getTypeColor(tag.name) || '#d1d5db'
               }"
             >
               {{ tag.name }}
@@ -230,6 +230,19 @@ const emit = defineEmits<{
   save: [item: Partial<InventoryItem>]
   close: []
 }>()
+
+// Fonction pour obtenir les couleurs pastel des types
+const getTypeColor = (typeName: string) => {
+  const colors: Record<string, string> = {
+    weapon: '#fca5a5',      // rouge pastel
+    armor: '#93c5fd',       // bleu pastel
+    shield: '#6ee7b7',      // vert pastel
+    item: '#d1d5db',        // gris pastel
+    consumable: '#c4b5fd',  // violet pastel
+    tool: '#fcd34d'         // jaune pastel
+  }
+  return colors[typeName] || '#d1d5db'
+}
 
 // État du formulaire
 const form = ref({

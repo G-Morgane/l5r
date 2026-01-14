@@ -42,6 +42,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Japanatsuki';
+  src: url('/fonts/Japanatsuki.ttf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
 @layer base {
   body {
     font-family: 'Sigokae', 'Georgia', serif;

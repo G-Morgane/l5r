@@ -14,24 +14,24 @@
     <!-- Fond image japonaise -->
     <div class="absolute inset-0">
       <img
-        src="/background.png"
+        src="/fond_long.png"
         alt="Japanese room background"
-        class="w-full h-full object-cover"
+        class="w-full h-auto"
       />
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
-    <div class="container mx-auto px-4 py-8 relative z-10 h-screen flex flex-col font-montserrat">
-      <!-- En-tête -->
-      <div class="mb-8 flex-shrink-0 w-full">
-        <div class="flex items-center justify-between mb-6">
-          <h1 class="text-5xl font-bold text-white font-sakurata drop-shadow-lg">🎒 Inventaire</h1>
-          <BackButton @click="$router.push('/')" class="mb-0" blanc>← Retour</BackButton>
-        </div>
+    <div class="container mx-auto px-4 py-8 relative z-10">
+      <!-- PersonnageHeader -->
+      <PersonnageHeader
+        :personnage="personnageActif || {}"
+        @deselect="changeCharacter()"
+        class="mb-6"
+      />
 
       <!-- Contenu principal -->
-      <div class="flex-1 overflow-y-auto">
-        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-2xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 max-w-7xl mx-auto">
+      <div class="max-h-[80vh] relative overflow-y-auto">
+        <div class="relative z-10 p-6">
           <!-- Avertissement si tables non créées -->
           <div v-if="!tablesExist" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             <div class="flex items-center">
@@ -45,44 +45,79 @@
           </div>
 
           <!-- Actions principales -->
-          <div class="flex flex-wrap gap-4 mb-6">
+          <div class="flex flex-col gap-3 mb-4">
 
-          <!-- Filtrage par type avec tags -->
-          <div class="flex flex-wrap gap-1 mb-4">
-            <button 
-              @click="selectedTypeFilter = ''" 
-              :class="selectedTypeFilter === '' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-3 py-1 rounded text-sm font-medium transition-colors"
-            >
-              Tous
-            </button>
-            <button 
-              v-for="type in availableTypes" 
-              :key="type.value"
-              @click="selectedTypeFilter = type.value" 
-              :class="selectedTypeFilter === type.value ? 'text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-3 py-1 rounded text-sm font-medium transition-colors capitalize"
-              :style="{ backgroundColor: selectedTypeFilter === type.value ? type.color : undefined }"
-            >
-              {{ type.label }}
-            </button>
-          </div>
-          </div>
+            <!-- Filtres - Types à gauche, Équipement à droite -->
+            <div class="flex justify-between items-center font-montserrat">
+              <!-- Filtrage par type avec tags -->
+              <div class="flex flex-wrap gap-1 font-montserrat">
+                <button
+                  @click="selectedTypeFilter = ''"
+                  :class="selectedTypeFilter === '' ? 'text-black font-montserrat' : 'bg-gray-200 text-gray-700 font-montserrat'"
+                  class="px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
+                  :style="{ backgroundColor: selectedTypeFilter === '' ? '#fcd34d' : undefined }"
+                >
+                  Tous
+                </button>
+                <button
+                  v-for="type in availableTypes"
+                  :key="type.value"
+                  @click="selectedTypeFilter = type.value"
+                  :class="selectedTypeFilter === type.value ? 'text-black' : 'bg-gray-200 text-gray-700'"
+                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors capitalize font-sigokae"
+                  :style="{ backgroundColor: selectedTypeFilter === type.value ? getTypeColor(type.value) : undefined }"
+                >
+                  {{ type.label }}
+                </button>
+              </div>
+
+              <!-- Filtre par état d'équipement -->
+              <div class="flex gap-2">
+                <button
+                  @click="selectedEquipFilter = ''"
+                  :class="selectedEquipFilter === '' ? 'text-black' : 'bg-gray-200 text-gray-700'"
+                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
+                  :style="{ backgroundColor: selectedEquipFilter === '' ? '#6ee7b7' : undefined }"
+                >
+                  Tous
+                </button>
+                <button
+                  @click="selectedEquipFilter = 'equipped'"
+                  :class="selectedEquipFilter === 'equipped' ? 'text-black' : 'bg-gray-200 text-gray-700'"
+                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
+                  :style="{ backgroundColor: selectedEquipFilter === 'equipped' ? '#93c5fd' : undefined }"
+                >
+                  Équipés
+                </button>
+                <button
+                  @click="selectedEquipFilter = 'unequipped'"
+                  :class="selectedEquipFilter === 'unequipped' ? 'text-black' : 'bg-gray-200 text-gray-700'"
+                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
+                  :style="{ backgroundColor: selectedEquipFilter === 'unequipped' ? '#fca5a5' : undefined }"
+                >
+                  Non équipés
+                </button>
+              </div>
+            </div>
+
+            <!-- Barre de recherche et bouton ajout -->
             <div class="flex items-center gap-2">
               <button
-              @click="showAddItemModal = true"
-              class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <Icon name="heroicons:plus" class="w-5 h-5" />
-            </button>
+                @click="showAddItemModal = true"
+                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 font-sigokae"
+              >
+                <Icon name="heroicons:plus" class="w-5 h-5" />
+                Ajouter
+              </button>
               <input
                 v-model="searchQuery"
                 @input="applyFilters"
                 type="text"
                 placeholder="Nom, description..."
-                class="w-full px-3 py-2 border border-stone-300 rounded-md bg-white text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                class="flex-1 px-3 py-2 border border-stone-300 rounded-md bg-white text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-sigokae"
               />
             </div>
+          </div>
           <!-- Tags actifs -->
       <div v-if="activeTags.length > 0" class="mb-6">
         <div class="flex flex-wrap gap-2">
@@ -107,134 +142,161 @@
       </div>
 
       <!-- Liste des objets -->
-      <div class="bg-white rounded-lg shadow-sm border border-stone-200 overflow-hidden">
+      <div class="grid grid-cols-4">
         <div
           v-for="item in filteredItems"
           :key="item.id"
-          class="border-b border-stone-100 last:border-b-0"
+          class="rounded-lg overflow-hidden"
+          style="width: 170px; height: 170px; background-image: url('/square.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"
         >
           <!-- Ligne principale -->
           <div
-            @click="toggleItemExpansion(item.id)"
-            class="p-4 hover:bg-stone-50 cursor-pointer transition-colors"
+            @click="openItemDrawer(item)"
+            class="p-4 cursor-pointer transition-all hover:scale-105 flex flex-col items-center justify-center h-full"
           >
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-4 flex-1">
-                <!-- Icône d'expansion -->
-                <button class="flex-shrink-0">
-                  <Icon
-                    :name="expandedItems.has(item.id) ? 'heroicons:chevron-down' : 'heroicons:chevron-right'"
-                    class="w-5 h-5 text-stone-400"
-                  />
-                </button>
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-lg font-semibold text-black font-montserrat">{{ item.name }}</h3>
+              <Icon :name="item.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
+                    :class="item.is_equipped ? 'text-green-600' : 'text-gray-600'"
+                    class="w-5 h-5" />
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span
+                class="px-2 py-1 rounded-full text-xs font-medium font-montserrat"
+                :style="{ backgroundColor: getTypeColor(item.type), color: '#374151' }"
+              >
+                {{ translateType(item.type) }}
+              </span>
+               <div v-if="item.type === 'weapon' && item.damage" class="text-center">
+              <span class="text-sm font-semibold text-red-600 font-montserrat">{{ item.damage }}</span>
+              <span v-if="item.damage_type" class="text-xs text-red-500 font-montserrat ml-1">({{ translateDamageType(item.damage_type) }})</span>
+            </div>
+            </div>
+                          <span class="text-sm text-black font-montserrat">{{ item.value }} koku</span>
 
-                <!-- Nom et type -->
-                <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-stone-800">{{ item.name }}</h3>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="capitalize px-2 py-1 rounded-full text-xs font-medium"
-                          :class="getTypeColorClass(item.type)">
-                      {{ translateType(item.type) }}
-                    </span>
-                    <span class="text-sm text-stone-600">{{ item.value }} koku</span>
-                    <span v-if="item.quantity > 1" class="text-sm text-stone-500">×{{ item.quantity }}</span>
+           
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Drawer pour les détails d'objet -->
+      <div v-if="selectedItem" class="fixed inset-0 z-50 flex">
+        <!-- Overlay -->
+        <div @click="closeItemDrawer" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        
+        <!-- Drawer panel -->
+        <div class="relative ml-auto w-full max-w-md h-full" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
+          <div class="relative z-10 p-6 h-full flex flex-col mt-24 pl-12">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-xl font-bold text-black font-montserrat">{{ selectedItem.name }}</h2>
+              <button @click="closeItemDrawer" class="p-2 text-black hover:text-gray-700 transition-colors">
+                <Icon name="heroicons:x-mark" class="w-6 h-6" />
+              </button>
+            </div>
+
+            <!-- Contenu scrollable -->
+            <div class="flex-1 overflow-y-auto space-y-6 max-h-[62vh] ">
+              <!-- État d'équipement -->
+              <div class="flex items-center gap-3">
+                <button
+                  @click="toggleEquip(selectedItem)"
+                  :class="selectedItem.is_equipped ? 'bg-green-500 hover:bg-green-600' : 'bg-stone-400 hover:bg-stone-500'"
+                  class="px-4 py-2 text-black text-sm rounded-lg transition-colors flex items-center gap-2 font-montserrat"
+                >
+                  <Icon :name="selectedItem.is_equipped ? 'heroicons:check' : 'heroicons:plus'" class="w-4 h-4" />
+                  {{ selectedItem.is_equipped ? 'Déséquiper' : 'Équiper' }}
+                </button>
+                <div class="flex items-center gap-2">
+                  <Icon :name="selectedItem.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
+                        :class="selectedItem.is_equipped ? 'text-green-600' : 'text-gray-600'"
+                        class="w-5 h-5" />
+                  <span class="text-sm text-black font-montserrat">
+                    {{ selectedItem.is_equipped ? 'Équipé' : 'Non équipé' }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Informations de base -->
+              <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <span class="text-sm font-semibold text-black font-montserrat">Type</span>
+                    <p class="text-black capitalize font-montserrat">{{ translateType(selectedItem.type) }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-semibold text-black font-montserrat">Valeur</span>
+                    <p class="text-black font-montserrat">{{ selectedItem.value }} koku</p>
+                  </div>
+                  <div v-if="selectedItem.quantity > 1">
+                    <span class="text-sm font-semibold text-black font-montserrat">Quantité</span>
+                    <p class="text-black font-montserrat">{{ selectedItem.quantity }}</p>
+                  </div>
+                  <div v-if="selectedItem.weight > 0">
+                    <span class="text-sm font-semibold text-black font-montserrat">Poids</span>
+                    <p class="text-black font-montserrat">{{ selectedItem.weight }} kg</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div v-if="selectedItem.description">
+                <h3 class="text-lg font-semibold text-black mb-2 font-montserrat">Description</h3>
+                <p class="text-black leading-relaxed font-montserrat">{{ selectedItem.description }}</p>
+              </div>
+
+              <!-- Propriétés spécifiques -->
+              <div class="space-y-3">
+                <div v-if="selectedItem.type === 'weapon' && selectedItem.damage" class="flex items-center gap-3">
+                  <Icon name="heroicons:bolt" class="w-5 h-5 text-red-600" />
+                  <div>
+                    <span class="text-sm font-semibold text-black font-montserrat">Dégâts</span>
+                    <p class="text-black font-montserrat">{{ selectedItem.damage }}
+                      <span v-if="selectedItem.damage_type" class="text-black font-montserrat">({{ translateDamageType(selectedItem.damage_type) }})</span>
+                    </p>
                   </div>
                 </div>
 
-                <!-- Actions rapides -->
-                <div class="flex items-center gap-2">
-                  <button
-                    @click.stop="toggleEquip(item)"
-                    :class="item.is_equipped ? 'bg-green-500 hover:bg-green-600' : 'bg-stone-400 hover:bg-stone-500'"
-                    class="px-3 py-1 text-white text-sm rounded transition-colors"
-                    :title="item.is_equipped ? 'Déséquiper' : 'Équiper'"
+                <div v-if="selectedItem.type === 'armor' && selectedItem.armor_rating" class="flex items-center gap-3">
+                  <Icon name="heroicons:shield-check" class="w-5 h-5 text-blue-600" />
+                  <div>
+                    <span class="text-sm font-semibold text-black font-montserrat">Armure</span>
+                    <p class="text-black font-montserrat">{{ selectedItem.armor_rating }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tags -->
+              <div v-if="selectedItem.tags && selectedItem.tags.length > 0">
+                <h3 class="text-lg font-semibold text-black mb-3 font-montserrat">Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="tag in selectedItem.tags"
+                    :key="tag.id"
+                    class="px-3 py-1 rounded-full text-sm font-medium font-montserrat"
+                    :style="{ backgroundColor: tag.color + '40', color: 'black', border: `1px solid ${tag.color}` }"
                   >
-                    <Icon :name="item.is_equipped ? 'heroicons:check' : 'heroicons:plus'" class="w-4 h-4" />
-                  </button>
-                  <button
-                    @click.stop="editItem(item)"
-                    class="p-2 text-stone-400 hover:text-stone-600 transition-colors rounded"
-                    title="Modifier"
-                  >
-                    <Icon name="heroicons:pencil" class="w-4 h-4" />
-                  </button>
-                  <button
-                    @click.stop="deleteItem(item)"
-                    class="p-2 text-red-400 hover:text-red-600 transition-colors rounded"
-                    title="Supprimer"
-                  >
-                    <Icon name="heroicons:trash" class="w-4 h-4" />
-                  </button>
+                    {{ tag.name }}
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Panneau extensible -->
-          <div
-            v-if="expandedItems.has(item.id)"
-            class="bg-stone-50 border-t border-stone-100 px-4 py-4"
-          >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Colonne gauche -->
-              <div class="space-y-4">
-                <!-- Description -->
-                <div v-if="item.description">
-                  <h4 class="text-sm font-semibold text-stone-700 mb-2">Description</h4>
-                  <p class="text-sm text-stone-600">{{ item.description }}</p>
-                </div>
-
-                <!-- Propriétés spécifiques -->
-                <div v-if="item.type === 'weapon' && item.damage" class="flex items-center gap-2">
-                  <Icon name="heroicons:bolt" class="w-4 h-4 text-red-500" />
-                  <span class="text-sm font-medium text-stone-700">
-                    Dégâts: {{ item.damage }}
-                    <span v-if="item.damage_type" class="text-stone-500">({{ translateDamageType(item.damage_type) }})</span>
-                  </span>
-                </div>
-
-                <div v-if="item.type === 'armor' && item.armor_rating" class="flex items-center gap-2">
-                  <Icon name="heroicons:shield-check" class="w-4 h-4 text-blue-500" />
-                  <span class="text-sm font-medium text-stone-700">
-                    Armure: {{ item.armor_rating }}
-                  </span>
-                </div>
-
-                <!-- Poids -->
-                <div v-if="item.weight > 0" class="flex items-center gap-2">
-                  <Icon name="heroicons:scale" class="w-4 h-4 text-stone-500" />
-                  <span class="text-sm text-stone-600">Poids: {{ item.weight }} kg</span>
-                </div>
-              </div>
-
-              <!-- Colonne droite -->
-              <div class="space-y-4">
-                <!-- Tags -->
-                <div v-if="item.tags && item.tags.length > 0">
-                  <h4 class="text-sm font-semibold text-stone-700 mb-2">Tags</h4>
-                  <div class="flex flex-wrap gap-1">
-                    <button
-                      v-for="tag in item.tags"
-                      :key="tag.id"
-                      @click="addTagFilter(tag)"
-                      class="px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80"
-                      :style="{ backgroundColor: tag.color + '20', color: tag.color, border: `1px solid ${tag.color}` }"
-                    >
-                      {{ tag.name }}
-                    </button>
-                  </div>
-                </div>
-
-                <!-- État d'équipement -->
-                <div class="flex items-center gap-2">
-                  <Icon :name="item.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
-                        :class="item.is_equipped ? 'text-green-500' : 'text-stone-400'"
-                        class="w-4 h-4" />
-                  <span class="text-sm text-stone-600">
-                    {{ item.is_equipped ? 'Équipé' : 'Non équipé' }}
-                  </span>
-                </div>
-              </div>
+            <!-- Actions du bas -->
+            <div class="mt-6 pl-36 flex gap-3">
+              <button
+                @click="editItem(selectedItem)"
+                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-black rounded-lg font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+              >
+                <Icon name="heroicons:pencil" class="w-4 h-4" />
+                            </button>
+              <button
+                @click="deleteItem(selectedItem)"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-black rounded-lg font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+              >
+                <Icon name="heroicons:trash" class="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
@@ -242,14 +304,13 @@
 
       <!-- Message si aucun objet -->
       <div v-if="filteredItems.length === 0" class="text-center py-12">
-        <Icon name="heroicons:backpack" class="w-16 h-16 text-stone-300 mx-auto mb-4" />
-        <h3 class="text-lg font-medium text-stone-600 mb-2">Aucun objet trouvé</h3>
-        <p class="text-stone-500">
+        <Icon name="heroicons:backpack" class="w-16 h-16 text-stone-200 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-stone-200 mb-2">Aucun objet trouvé</h3>
+        <p class="text-stone-300">
           {{ searchQuery || selectedTypeFilter || activeTags.length > 0
              ? 'Essayez de modifier vos filtres de recherche'
              : 'Commencez par ajouter votre premier objet à l\'inventaire' }}
         </p>
-        </div>
       </div>
     </div>
     </div>
@@ -304,9 +365,11 @@ const showAddItemModal = ref(false)
 const editingItem = ref<InventoryItem | null>(null)
 const searchQuery = ref('')
 const selectedTypeFilter = ref('')
+const selectedEquipFilter = ref('')
 const activeTagFilters = ref<string[]>([])
 const expandedItems = ref<Set<string>>(new Set())
 const tablesExist = ref(true)
+const selectedItem = ref<InventoryItem | null>(null)
 
 // Computed
 const filteredItems = computed(() => {
@@ -325,6 +388,15 @@ const filteredItems = computed(() => {
   // Filtre par type
   if (selectedTypeFilter.value) {
     filtered = filtered.filter(item => item.type === selectedTypeFilter.value)
+  }
+
+  // Filtre par état d'équipement
+  if (selectedEquipFilter.value) {
+    if (selectedEquipFilter.value === 'equipped') {
+      filtered = filtered.filter(item => item.is_equipped)
+    } else if (selectedEquipFilter.value === 'unequipped') {
+      filtered = filtered.filter(item => !item.is_equipped)
+    }
   }
 
   // Filtre par tags
@@ -372,6 +444,18 @@ const translateDamageType = (damageType: string) => {
     magic: 'Magique'
   }
   return translations[damageType] || damageType
+}
+
+const getTypeColor = (type: string) => {
+  const colors: Record<string, string> = {
+    weapon: '#fca5a5',      // red-300 - rouge pastel
+    armor: '#93c5fd',       // blue-300 - bleu pastel
+    shield: '#6ee7b7',      // emerald-300 - vert pastel
+    item: '#d1d5db',        // gray-300 - gris pastel
+    consumable: '#c4b5fd',  // violet-300 - violet pastel
+    tool: '#fcd34d'         // amber-300 - jaune pastel
+  }
+  return colors[type] || '#d1d5db'
 }
 
 const getTypeColorClass = (type: string) => {
@@ -466,6 +550,14 @@ const toggleItemExpansion = (itemId: string) => {
   }
 }
 
+const openItemDrawer = (item: InventoryItem) => {
+  selectedItem.value = item
+}
+
+const closeItemDrawer = () => {
+  selectedItem.value = null
+}
+
 const toggleEquip = async (item: InventoryItem) => {
   const { error } = await supabase
     .from('inventory_items')
@@ -478,6 +570,11 @@ const toggleEquip = async (item: InventoryItem) => {
   }
 
   item.is_equipped = !item.is_equipped
+  
+  // Mettre à jour l'item sélectionné si c'est le même
+  if (selectedItem.value && selectedItem.value.id === item.id) {
+    selectedItem.value.is_equipped = item.is_equipped
+  }
 }
 
 const editItem = (item: InventoryItem) => {
@@ -498,6 +595,11 @@ const deleteItem = async (item: InventoryItem) => {
   }
 
   await loadItems()
+  
+  // Fermer le drawer si c'était l'item supprimé
+  if (selectedItem.value && selectedItem.value.id === item.id) {
+    closeItemDrawer()
+  }
 }
 
 const saveItem = async (itemData: Partial<InventoryItem>) => {
@@ -515,6 +617,10 @@ const saveItem = async (itemData: Partial<InventoryItem>) => {
       ...itemData,
       character_id: personnageActif.value.id,
       updated_at: new Date().toISOString()
+    }
+
+    if (isEditing && itemId) {
+      itemPayload.id = itemId
     }
 
     if (!isEditing) {
@@ -562,6 +668,11 @@ const saveItem = async (itemData: Partial<InventoryItem>) => {
 
     await loadItems()
     closeModal()
+    
+    // Fermer le drawer si c'était l'item modifié
+    if (selectedItem.value && selectedItem.value.id === savedItem.id) {
+      closeItemDrawer()
+    }
   } catch (error) {
     console.error('Erreur inattendue:', error)
     alert('Une erreur inattendue s\'est produite')
@@ -571,6 +682,11 @@ const saveItem = async (itemData: Partial<InventoryItem>) => {
 const closeModal = () => {
   showAddItemModal.value = false
   editingItem.value = null
+}
+
+const changeCharacter = () => {
+  personnageActif.value = null
+  navigateTo('/')
 }
 
 // Lifecycle

@@ -74,62 +74,14 @@
       </div>
 
       <!-- Menu principal avec personnage actif -->
-      <div v-else class="max-w-6xl mx-auto">
+      <div v-else class="max-w-6xl mx-auto" style="margin-top: 30vh;">
         <!-- En-tête personnage style parchemin -->
         <PersonnageHeader 
+        
           :personnage="personnageActif"
-          @deselect="() => personnageActif = null"
+          @deselect="() => navigateTo('/')"
         />
 
-        <!-- Cartes de navigation style parchemin -->
-        <div class="relative">
-          <div class="flex justify-around items-center gap-2 overflow-x-auto relative z-10 py-12 px-4">
-            <NavigationCard
-              link="/journal"
-              emoji="📖"
-              title="Journal de bord"
-              description="Aventures et sessions"
-            />
-            <NavigationCard
-              link="/wiki"
-              emoji="📚"
-              title="Wiki"
-              description="Lieux, PNJ, événements"
-            />
-            <NavigationCard
-              link="/profil"
-              emoji="⚔️"
-              title="Profil"
-              description="Fiche de personnage"
-            />
-
-          <NavigationCard
-            link="/inventaire"
-            emoji="🎒"
-            title="Inventaire"
-            description="Équipement et trésor"
-          />
-
-          <NavigationCard
-            link="/sorts"
-            emoji="✨"
-            title="Sorts"
-            description="Magie et rituels"
-          />
-          <NavigationCard
-            link="/carte"
-            emoji="🗺"
-            title="Carte"
-            description="Map de Rokugan"
-          />
-           <NavigationCard
-            link="/intrigues"
-            emoji="🕵️"
-            title="Intrigues"
-            description="Enquêtes en cours"
-          />
-          </div>
-        </div>
       </div>
     </div>
   </div>

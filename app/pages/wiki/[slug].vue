@@ -3,118 +3,86 @@
     <!-- Fond image japonaise -->
     <div class="absolute inset-0">
       <img 
-        src="/background.png" 
+        src="/fond_long.png" 
         alt="Japanese room background" 
-        class="w-full h-full object-cover"
+        class="w-full h-auto"
       />
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
-    <div v-if="item" class="container mx-auto px-4 py-8 relative z-10 h-screen flex flex-col">
+    <div v-if="item" class="container mx-auto px-4 py-8 relative z-10">
+      <!-- PersonnageHeader -->
+      <PersonnageHeader 
+        :personnage="personnageActif || {}"
+        @deselect="changeCharacter()"
+        class="mb-6" 
+      />
+
       <!-- En-tête -->
-      <div class="mb-8 flex-shrink-0 w-full">
+      <div class="mb-8 w-full">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-5xl font-bold text-white font-sakurata drop-shadow-lg">📖 {{ item.nom }}</h1>
           <div class="flex gap-4">
             <BackButton @click="$router.push('/wiki')" class="mb-0" blanc>← Retour au Wiki</BackButton>
-            <button 
-              @click="supprimerItem"
-              class="px-4 py-2 rounded-xl border-2 border-red-800/60 ring-4 ring-red-900/30 ring-offset-2 ring-offset-transparent shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden bg-white"
-            >
-              <span class="text-red-800 font-bold relative z-10 font-katana">🗑️ Supprimer</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Catégorie badge -->
-        <div class="mb-6">
-          <div v-if="!modeEditionCategorie" class="flex items-center gap-3">
-            <button 
-              @click="modeEditionCategorie = true; nouvelleCategorie = item.categorie"
-              class="inline-block px-4 py-2 rounded-xl border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-amber-100 hover:bg-amber-200 transition-all font-katana font-bold text-stone-900 cursor-pointer"
-              title="Cliquer pour modifier la catégorie"
-            >
-              {{ categories.find(c => c.id === item.categorie)?.emoji }} {{ categories.find(c => c.id === item.categorie)?.nom }}
-            </button>
-          </div>
-          
-          <!-- Sélecteur de catégorie en mode édition -->
-          <div v-else class="flex items-center gap-3">
-            <select 
-              v-model="nouvelleCategorie"
-              class="bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-2 transition-all outline-none text-stone-900 font-montserrat shadow-sm"
-            >
-              <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                {{ cat.emoji }} {{ cat.nom }}
-              </option>
-            </select>
-            <div class="flex gap-2">
-              <button 
-                @click="enregistrerCategorie"
-                class="px-3 py-2 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 rounded-xl font-bold transition-all duration-300 shadow-lg text-amber-50 font-katana text-sm"
-              >
-                💾
-              </button>
-              <button 
-                @click="annulerEditionCategorie"
-                class="px-3 py-2 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30 rounded-xl font-semibold transition-all duration-300 text-stone-800 font-katana text-sm"
-              >
-                ✕
-              </button>
-            </div>
+            <BackButton @click="supprimerItem">Supprimer</BackButton>
+            <BackButton v-if="!modeEdition && !modeEditionCategorie" @click="activerModeEdition">✏️ Modifier</BackButton>
+            <BackButton v-if="modeEdition || modeEditionCategorie" @click="sauvegarderTout">💾 Sauvegarder</BackButton>
           </div>
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto pr-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Description -->
-        <div class="rounded-xl p-6 border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-white/90 h-fit lg:col-span-2">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold text-stone-900 font-manga">📝 Description</h2>
-            <button 
-              v-if="!modeEdition"
-              @click="modeEdition = true"
-              class="px-4 py-2 rounded-lg border-2 border-amber-800/60 ring-2 ring-amber-900/30 bg-amber-100 hover:bg-amber-200 transition-all font-katana font-bold text-stone-900"
-            >
-              ✏️ Modifier
-            </button>
-          </div>
+        <div class="max-h-[80vh] lg:col-span-2 relative py-24 px-12" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: top; background-repeat: no-repeat;">
+          <div class="relative z-10 p-6">
+            <div v-if="!modeEdition" class="prose max-w-none ">
+              <!-- Informations complètes -->
+              <div class="space-y-4 max-h-[60vh] overflow-y-auto">
+                <!-- Description principale -->
+                <div v-if="item.description" class="text-stone-800 font-montserrat text-sm">
+                  <div v-html="formatDescription(item.description)" class="leading-relaxed"></div>
+                </div>
+                
+                <!-- Métadonnées -->
+                <div class="border-t border-amber-800/30 pt-4 space-y-2">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span class="font-semibold text-stone-700 font-montserrat">Catégorie:</span>
+                      <span class="ml-2 text-stone-800">{{ categories.find(c => c.id === item.categorie)?.emoji }} {{ categories.find(c => c.id === item.categorie)?.nom }}</span>
+                    </div>
+                    <div>
+                      <span class="font-semibold text-stone-700 font-montserrat">Créé le:</span>
+                      <span class="ml-2 text-stone-800 font-montserrat">{{ new Date(item.created_at).toLocaleDateString('fr-FR') }}</span>
+                    </div>
+                    <div v-if="item.updated_at && item.updated_at !== item.created_at">
+                      <span class="font-semibold text-stone-700 font-montserrat">Modifié le:</span>
+                      <span class="ml-2 text-stone-800">{{ new Date(item.updated_at).toLocaleDateString('fr-FR') }}</span>
+                    </div>
+                    <div v-if="item.tags && item.tags.length > 0">
+                      <span class="font-semibold text-stone-700 font-montserrat">Tags:</span>
+                      <span class="ml-2 text-stone-800">{{ item.tags.join(', ') }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p v-if="!item.description" class="text-stone-500 italic font-montserrat">Aucune description pour le moment...</p>
+            </div>
 
-          <div v-if="!modeEdition" class="prose max-w-none">
-            <div 
-              v-if="item.description" 
-              v-html="formatDescription(item.description)" 
-              class="text-stone-800 font-montserrat flex flex-col gap-4"
-            ></div>
-            <p v-else class="text-stone-500 italic font-montserrat">Aucune description pour le moment...</p>
-          </div>
-
-          <div v-else>
-            <RichTextEditor v-model="description" />
-            <div class="flex gap-3 mt-4">
-              <button 
-                @click="enregistrerDescription"
-                class="flex-1 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg text-amber-50 font-katana"
-              >
-                💾 Enregistrer
-              </button>
-              <button 
-                @click="annulerEdition"
-                class="px-6 py-3 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30 rounded-xl font-semibold transition-all duration-300 text-stone-800 font-katana"
-              >
-                Annuler
-              </button>
+            <div v-else>
+              <div class="prose max-w-none">
+                <div class="space-y-4">
+                  <RichTextEditor v-model="description" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Liens (Wiki + Journal) -->
-        <div class="rounded-xl p-6 border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-white/90 h-fit">
-          <h2 class="text-2xl font-bold text-stone-900 font-manga mb-4">🔗 Liens</h2>
-          
+        <div class="h-[80vh] w-full relative overflow-hidden px-12 pt-16" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
+          <div class="relative z-10">          
           <!-- Champ d'ajout de liens wiki -->
           <div class="mb-6">
-            <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">Ajouter un lien wiki</label>
             <div class="relative flex gap-2 mb-3">
               <div class="relative flex-1 suggestions-container">
                 <input 
@@ -124,7 +92,7 @@
                   @input="filtrerSuggestions"
                   @focus="afficherSuggestions = true"
                   class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-2 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat shadow-sm" 
-                  placeholder="Lier avec une autre page wiki..."
+                  placeholder="Links..."
                 />
                 <!-- Suggestions dropdown -->
                 <div 
@@ -144,13 +112,6 @@
                   </button>
                 </div>
               </div>
-              <button 
-                type="button"
-                @click="ajouterTag"
-                class="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-xl font-semibold transition-colors shadow-sm font-katana"
-              >
-                + Ajouter
-              </button>
             </div>
           </div>
           
@@ -218,6 +179,7 @@
         </div>
       </div>
     </div>
+    </div>
 
     <div v-else class="container mx-auto px-4 py-8 relative z-10 flex items-center justify-center h-screen">
       <div class="rounded-xl p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-xl bg-white/90">
@@ -279,17 +241,16 @@ onMounted(() => {
 const chargerItem = async () => {
   if (!personnageActif.value?.id) return
   
-  const { data } = await client
+  const { data, error } = await client
     .from('wiki_items')
     .select('*')
     .eq('slug', route.params.slug)
     .eq('personnage_id', personnageActif.value.id)
-    .single()
   
-  if (data) {
-    item.value = data
-    description.value = data.description || ''
-    nouvelleCategorie.value = data.categorie
+  if (!error && data && data.length > 0) {
+    item.value = data[0]
+    description.value = data[0].description || ''
+    nouvelleCategorie.value = data[0].categorie
     chargerItemsLies()
   } else {
     navigateTo('/wiki')
@@ -338,40 +299,6 @@ const chargerEntreesLiees = async () => {
       return entree.tags?.includes(item.value?.nom)
     })
   }
-}
-
-const enregistrerDescription = async () => {
-  const { error } = await client
-    .from('wiki_items')
-    .update({ description: description.value })
-    .eq('id', item.value.id)
-  
-  if (!error) {
-    item.value.description = description.value
-    modeEdition.value = false
-  }
-}
-
-const annulerEdition = () => {
-  description.value = item.value.description || ''
-  modeEdition.value = false
-}
-
-const enregistrerCategorie = async () => {
-  const { error } = await client
-    .from('wiki_items')
-    .update({ categorie: nouvelleCategorie.value })
-    .eq('id', item.value.id)
-  
-  if (!error) {
-    item.value.categorie = nouvelleCategorie.value
-    modeEditionCategorie.value = false
-  }
-}
-
-const annulerEditionCategorie = () => {
-  nouvelleCategorie.value = item.value.categorie
-  modeEditionCategorie.value = false
 }
 
 const supprimerItem = async () => {
@@ -471,6 +398,41 @@ const filtrerSuggestions = () => {
   afficherSuggestions.value = true
 }
 
+const activerModeEdition = () => {
+  modeEdition.value = true
+  modeEditionCategorie.value = true
+}
+
+const sauvegarderTout = async () => {
+  // Sauvegarder la description
+  if (description.value !== item.value.description) {
+    const { error: descError } = await client
+      .from('wiki_items')
+      .update({ description: description.value })
+      .eq('id', item.value.id)
+    
+    if (!descError) {
+      item.value.description = description.value
+    }
+  }
+
+  // Sauvegarder la catégorie
+  if (nouvelleCategorie.value !== item.value.categorie) {
+    const { error: catError } = await client
+      .from('wiki_items')
+      .update({ categorie: nouvelleCategorie.value })
+      .eq('id', item.value.id)
+    
+    if (!catError) {
+      item.value.categorie = nouvelleCategorie.value
+    }
+  }
+
+  // Désactiver les modes d'édition
+  modeEdition.value = false
+  modeEditionCategorie.value = false
+}
+
 const formatDescription = (text) => {
   if (!text) return ''
   
@@ -487,5 +449,9 @@ const formatDescription = (text) => {
 
 const getWikiItemByName = (nom) => {
   return tousLesItems.value.find(i => i.nom === nom)
+}
+
+const changeCharacter = () => {
+  navigateTo('/')
 }
 </script>

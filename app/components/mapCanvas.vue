@@ -1,14 +1,14 @@
 <template>
-  <div class="flex h-screen font-montserrat" style="background-image: url('https://i.pinimg.com/1200x/a8/15/3f/a8153f187d02808faa8e65539bd92b5b.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
+  <div class="flex h-screen font-montserrat" style="background-image: url('https://i.pinimg.com/1200x/a8/15/3f/a8153f187d02808faa8e65539bd92b5b.jpg'); background-size: cover;">
     <!-- Map section - 50vw -->
-    <div class="w-[50vw] flex justify-center items-center p-4">
+    <div class="w-[60vw] flex justify-center items-center p-4">
       <div class="relative overflow-hidden rounded-2xl shadow" :style="{ height: '100vh', aspectRatio: imageDimensions ? imageDimensions.width / imageDimensions.height : undefined }">
         <!-- Map image -->
         <img
           ref="imageRef"
           v-if="map.image_url"
           :src="map.image_url"
-          class="absolute inset-0 w-full h-full object-contain bg-zinc-950/5"
+          class="absolute inset-0 w-full h-full object-contain"
           alt="Rokugan map"
           draggable="false"
           @load="onImageLoad"
@@ -30,7 +30,7 @@
             @click="onCellClick((i - 1) % cols, Math.floor((i - 1) / cols))"
           >
             <!-- hover hint -->
-            <span class="absolute inset-0 group-hover:bg-white/10 transition"></span>
+            <span class="absolute inset-0 transition"></span>
           </button>
         </div>
 
@@ -56,10 +56,8 @@
     </div>
 
     <!-- List section - 50vw -->
-    <div class="w-[50vw] p-4 overflow-y-auto border-l relative">
-      <div class="absolute inset-0 bg-amber-50/30"></div>
+    <div class=" p-4 overflow-y-auto border-l relative">
       <div class="relative z-10">
-                  <BackButton @click="goBack" class="mb-4">← Retour</BackButton>
 
         <div class="flex flex-row gap-8 h-12">
           
