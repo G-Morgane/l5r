@@ -16,7 +16,7 @@
       <div class="flex flex-col">
 
         <!-- Bouton créer nouvelle entrée et Barre de recherche -->
-        <div class="mb-8 flex gap-4 items-center px-12">
+        <div class="mb-2 flex gap-4 items-center px-38">
           <div class="relative flex-1">
             <div class="relative rounded-xl overflow-hidden">
               <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
@@ -41,7 +41,7 @@
       </div>
 
       <!-- Liste des entrées -->
-      <div class="flex-1 overflow-y-auto pr-4">
+      <div class="flex-1 overflow-y-auto px-32">
         <div v-if="entriesFiltrees.length === 0 && searchQuery" class="text-center py-12">
           <div class="rounded-xl p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80">
             <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
@@ -62,17 +62,17 @@
             </div>
           </div>
         </div>
-        <div v-else class="space-y-6 px-12 max-h-[40vh] overflow-y-auto">
+        <div v-else class="grid grid-cols-2 gap-4 px-4 max-h-[30vh] overflow-y-auto">
           <div
             v-for="(entry, index) in entriesFiltrees"
             :key="entry.id"
-            class="rounded-xl p-10 relative overflow-hidden cursor-pointer"
+            class="rounded-xl p-4 relative overflow-hidden cursor-pointer"
             @click="selectEntry(entry)"
           >
             <div class="absolute inset-0" :style="`background-image: url('${getRandomJournalImage(index)}'); background-size: 100% 100%; background-position: center;`"></div>
             <div class="relative z-10">
               <div class="flex flex-col items-center mb-3">
-                <h3 class="text-2xl font-bold text-black font-manga text-center">{{ entry.titre }}</h3>
+                <h3 class="text-lg font-bold text-black font-manga text-center">{{ entry.titre }}</h3>
                 <span class="text-sm text-black font-montserrat">{{ formatDate(entry.date_session) }}</span>
               </div>
             </div>
@@ -102,7 +102,7 @@
           </div>
 
           <!-- Contenu scrollable -->
-          <div class="overflow-y-auto flex-1 p-8">
+          <div class="overflow-y-auto flex-1">
             <form @submit.prevent="creerEntree" class="space-y-6">
               <div class="grid md:grid-cols-2 gap-6">
                 <div>
@@ -214,23 +214,13 @@
 
       <!-- Drawer détail -->
       <div v-if="entreeSelectionnee || createMode" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" @click.self="closeDrawer">
-        <div class="absolute right-0 top-0 bottom-0 w-full max-w-2xl overflow-y-auto flex flex-col" style="background-image: url('/drawer.png'); background-size: cover; background-position: center;">
+        <div class="absolute right-0 top-[-40px] h-[110vh] w-[40vw] flex flex-col" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center;">
           <!-- En-tête -->
           <div class="relative overflow-hidden">
             <div class="relative px-6 py-4 flex items-center justify-between">
-              <div v-if="drawerMode === 'view'" class="pl-36 pt-24">
+              <div v-if="drawerMode === 'view'" class="pl-24 pt-24">
                 <h3 class="text-3xl font-bold text-stone-900 font-manga mb-2">{{ entreeSelectionnee.titre }}</h3>
                 <p class="text-sm text-stone-700 font-montserrat mb-2">📅 {{ formatDate(entreeSelectionnee.date_session) }}</p>
-                <div v-if="entreeSelectionnee.tags && entreeSelectionnee.tags.length > 0" class="flex flex-wrap gap-2">
-                  <NuxtLink
-                    v-for="(tag, index) in entreeSelectionnee.tags" 
-                    :key="index"
-                    :to="getWikiItemByName(tag)?.slug ? `/wiki/${getWikiItemByName(tag).slug}` : `/wiki?create=${encodeURIComponent(tag)}`"
-                    class="inline-flex items-center gap-1 px-3 py-1 bg-amber-300/70 hover:bg-amber-400 text-stone-800 rounded-lg font-montserrat text-sm font-medium transition-all"
-                  >
-                    🏷️ {{ tag }}
-                  </NuxtLink>
-                </div>
               </div>
               <div v-else-if="createMode">
                 <h3 class="text-2xl font-bold text-stone-900 font-manga flex items-center gap-3">
@@ -238,22 +228,27 @@
                   Nouvelle entrée
                 </h3>
               </div>
-              <button 
-                @click="closeDrawer" 
-                class="text-stone-700 hover:text-stone-900 transition-colors text-4xl leading-none p-2 hover:bg-amber-200/50 rounded-lg"
-              >
-                ×
-              </button>
+             
             </div>
           </div>
 
           <!-- Contenu -->
-          <div v-if="drawerMode === 'view'" class="overflow-y-auto flex-1 px-24">
-            <div class="prose prose-stone max-w-none text-stone-900 font-montserrat leading-relaxed journal-content" v-html="formatContent(entreeSelectionnee.contenu)"></div>
+          <div v-if="drawerMode === 'view'" class="overflow-y-auto flex-1 px-24 flex flex-col gap-4">
+            <div v-if="entreeSelectionnee.tags && entreeSelectionnee.tags.length > 0" class="flex flex-wrap gap-2">
+                  <NuxtLink
+                    v-for="(tag, index) in entreeSelectionnee.tags" 
+                    :key="index"
+                    :to="getWikiItemByName(tag)?.slug ? `/wiki/${getWikiItemByName(tag).slug}` : `/wiki?create=${encodeURIComponent(tag)}`"
+                    class="inline-flex items-center gap-1 px-3 py-1 bg-amber-300/70 hover:bg-amber-400 text-stone-800 rounded-lg font-montserrat text-sm font-medium transition-all"
+                  >
+                    {{ getTagEmoji(tag) }} {{ tag }}
+                  </NuxtLink>
+                </div>
+            <div class="prose prose-stone max-w-none text-stone-900 font-montserrat leading-relaxed journal-content text-sm" v-html="formatContent(entreeSelectionnee.contenu)"></div>
           </div>
 
           <!-- Formulaire d'édition -->
-          <div v-else class="overflow-y-auto flex-1 px-24">
+          <div v-else class="overflow-y-auto flex-1 px-24 pt-18">
             <form id="edit-form" @submit.prevent="creerEntree" class="space-y-4">
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
@@ -327,29 +322,27 @@
           </div>
 
           <!-- Actions -->
-          <div v-if="drawerMode === 'view'" class="flex w-full gap-8 content-center justify-center pb-12">
-            <button 
+          <div v-if="drawerMode === 'view'" class="flex w-full gap-2 content-center justify-center pb-12">
+             <img 
               @click="modifierEntree(entreeSelectionnee)" 
-              class="px-6 py-3 bg-amber-700 hover:bg-amber-600 rounded-xl font-bold transition-all duration-300 text-white flex items-center gap-2 font-katana"
-            >
-              <span class="text-lg">✏️</span>
-            </button>
-            <button 
-              @click="supprimerEntree(entreeSelectionnee.id)" 
-              class="px-6 py-3 bg-red-700 hover:bg-red-600 rounded-xl font-bold transition-all duration-300 text-white flex items-center gap-2 font-katana"
-            >
-              <span class="text-lg">🗑️</span>
-            </button>
+              :src="'encrier.png'"
+              class="w-16 h-18 object-cover rounded-lg cursor-pointer hover:scale-105"
+            />
+            <img 
+                          @click="supprimerEntree(entreeSelectionnee.id)" 
+              :src="'poubelle.png'"
+              class="w-12 h-18 object-cover rounded-lg cursor-pointer hover:scale-105"
+            />
           </div>
 
           <!-- Actions édition -->
           <div v-else class="flex w-full gap-8 content-center justify-center pb-12">
-            <button 
+            <img 
               @click="creerEntree"
-              class="px-6 py-3 bg-green-700 hover:bg-green-600 rounded-xl font-bold transition-all duration-300 text-white flex items-center gap-2 font-katana"
-            >
-              <span class="text-lg">💾</span>
-            </button>
+              :src="'save.png'"
+              class="w-12 h-12 object-cover rounded-lg cursor-pointer hover:scale-105"
+            />
+           
           </div>
         </div>
       </div>
@@ -672,6 +665,14 @@ const formatDate = (dateString) => {
 
 const getWikiItemByName = (name) => {
   return wikiItems.value.find(item => item.nom.toLowerCase() === name.toLowerCase())
+}
+
+const getTagEmoji = (tagName) => {
+  const wikiItem = getWikiItemByName(tagName)
+  if (wikiItem) {
+    return emojiParCategorie[wikiItem.categorie] || '🏷️'
+  }
+  return '🏷️'
 }
 
 const formatContent = (content) => {

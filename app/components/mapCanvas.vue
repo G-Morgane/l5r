@@ -1,8 +1,8 @@
 <template>
-  <div class="flex h-screen font-montserrat" style="background-image: url('https://i.pinimg.com/1200x/a8/15/3f/a8153f187d02808faa8e65539bd92b5b.jpg'); background-size: cover;">
+  <div class="flex h-screen font-montserrat" style="background-image: url('https://i.pinimg.com/1200x/a8/15/3f/a8153f187d02808faa8e65539bd92b5b.jpg'); background-size: 100% 100%;">
     <!-- Map section - 50vw -->
-    <div class="w-[60vw] flex justify-center items-center p-4">
-      <div class="relative overflow-hidden rounded-2xl shadow" :style="{ height: '100vh', aspectRatio: imageDimensions ? imageDimensions.width / imageDimensions.height : undefined }">
+    <div class="w-[39vw] flex justify-center items-center p-4 pl-34">
+      <div class="relative overflow-hidden rounded-2xl shadow" :style="{ height: '100%', aspectRatio: imageDimensions ? imageDimensions.width / imageDimensions.height : undefined }">
         <!-- Map image -->
         <img
           ref="imageRef"
@@ -56,7 +56,7 @@
     </div>
 
     <!-- List section - 50vw -->
-    <div class=" p-4 overflow-y-auto border-l relative">
+    <div class=" p-4 overflow-y-auto border-l relative ml-15 mt-2">
       <div class="relative z-10">
 
         <div class="flex flex-row gap-8 h-12">

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="personnage" class="rounded-xl py-24 px-20 mb-12 relative overflow-hidden w-full max-w-7xl mx-auto" style="min-height: 320px;">
+  <div v-if="personnage" class="rounded-xl py-24 px-20 relative overflow-hidden w-full max-w-7xl mx-auto" style="min-height: 320px;">
     <div class="absolute inset-0" style="background-image: url('/parchemin_header.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"></div>
     
     <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" style="position:relative; top:-50px;">
@@ -38,7 +38,7 @@
 
     <!-- Cartes de navigation style parchemin -->
     <div class="absolute bottom-5 left-0 right-0 z-10 overflow-x-hidden">
-      <div class="flex justify-around items-center gap-2 overflow-hidden px-12">
+      <div class="flex justify-around items-center overflow-hidden px-48">
          <NavigationCard
           link="/profil"
           emoji="⚔️"

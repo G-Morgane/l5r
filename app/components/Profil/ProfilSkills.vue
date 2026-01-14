@@ -1,45 +1,16 @@
 <template>
-  <div class="rounded-xl p-6 border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-2xl relative overflow-hidden bg-white/90 mb-6">
-    <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
-    <div class="absolute inset-0 bg-amber-50/30"></div>
-    <div class="relative z-10">
-      <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center gap-2">
-          <h2 class="text-2xl font-bold text-red-900 font-sakurata">Compétences</h2>
-          <button
-            @click="$emit('open-nd-modal')"
-            class="w-6 h-6 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center text-sm font-bold transition-all"
-            title="Voir la table de référence des ND"
-          >
-            ?
-          </button>
-        </div>
-        <div class="flex gap-2">
-          <button
-            @click="modeEditionCompetences = !modeEditionCompetences"
-            class="px-4 py-2 bg-gradient-to-b from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 text-white rounded-lg font-bold transition-all border-2 border-blue-950 shadow-lg font-katana"
-          >
-            {{ modeEditionCompetences ? '✓' : '✏️' }}
-          </button>
-          <button
-            @click="$emit('add-skill')"
-            class="px-4 py-2 bg-gradient-to-b from-green-700 to-green-900 hover:from-green-600 hover:to-green-800 text-white rounded-lg font-bold transition-all border-2 border-green-950 shadow-lg font-katana"
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      <div class="overflow-x-auto bg-white/60 rounded-lg p-4">
-        <table class="w-full text-sm">
+  <div class="rounded-xl p-3 relative overflow-hidden mb-6 pt-12">
+    <div class="absolute inset-0" style="background-image: url('/parchemin_side_side.png'); background-size: 100% 100%; background-position: center;"></div>
+    <div class="relative z-10 px-12 flex flex-row gap-4 items-center">
+      <div class="overflow-x-auto max-h-[40vh] overflow-y-auto rounded-lg p-2 flex-1">
+        <table class="w-full text-xs">
           <thead>
             <tr class="border-b-2 border-red-900">
-              <th class="text-left py-2 px-2 font-bold font-katana">Compétence</th>
+              <th class="text-left py-2 px-2 font-bold w-40 font-katana">Compétence</th>
               <th class="text-center py-2 px-2 font-bold w-16 font-katana">Rang</th>
-              <th class="text-center py-2 px-2 font-bold w-24 font-katana">Trait</th>
+              <th class="text-center py-2 px-2 font-bold w-32 font-katana">Trait</th>
               <th class="text-center py-2 px-2 font-bold w-20 font-katana">Jet</th>
-              <th class="text-center py-2 px-2 font-bold w-16 font-katana">Art</th>
-              <th class="text-left py-2 px-2 font-bold font-katana">Spécialisations</th>
+              <th class="text-left py-2 px-2 font-bold w-24 font-katana">Spécialisations</th>
               <th class="text-center py-2 px-2 font-bold w-20 font-katana">Description</th>
               <th class="w-10"></th>
             </tr>
@@ -72,27 +43,19 @@
                   @blur="$emit('save-skill', comp)"
                   class="w-full border border-stone-300 rounded px-2 py-1 text-center bg-white font-montserrat"
                 />
-                <span v-else class="font-montserrat text-center block">{{ comp.trait }}</span>
+                <span v-else class="font-montserrat text-center block">
+                  {{ comp.trait }}{{ getTraitValue(comp.trait) ? ` (${getTraitValue(comp.trait)})` : '' }}
+                </span>
               </td>
               <td class="py-2 px-2 text-center">
                 <span class="font-montserrat font-bold text-green-700">{{ calculerJet(comp) }}</span>
-              </td>
-              <td class="py-2 px-2 text-center">
-                <input
-                  v-if="modeEditionCompetences"
-                  v-model="comp.art"
-                  type="checkbox"
-                  @change="$emit('save-skill', comp)"
-                  class="w-5 h-5"
-                />
-                <span v-else class="font-montserrat">{{ comp.art ? '✓' : '' }}</span>
               </td>
               <td class="py-2 px-2">
                 <input
                   v-if="modeEditionCompetences"
                   v-model="comp.specialisations"
                   @blur="$emit('save-skill', comp)"
-                  class="w-full border border-stone-300 rounded px-2 py-1 bg-white font-montserrat text-xs"
+                  class="w-full border border-stone-300 rounded px-2 py-1 font-montserrat text-xs"
                   placeholder="Séparées par ,"
                 />
                 <span v-else class="font-montserrat text-xs">{{ comp.specialisations }}</span>
@@ -110,7 +73,7 @@
                 <button
                   v-if="modeEditionCompetences"
                   @click="$emit('delete-skill', comp.id)"
-                  class="text-red-600 hover:text-red-800 font-bold text-lg"
+                  class="text-red-600 hover:text-red-800 font-bold text-xs"
                 >
                   ✕
                 </button>
@@ -123,7 +86,30 @@
             </tr>
           </tbody>
         </table>
+
+        
       </div>
+        <div class="flex flex-col gap-2 flex-shrink-0">
+           <button
+            @click="$emit('open-nd-modal')"
+            class="px-4 py-2 bg-gradient-to-b from-orange-700 to-orange-900 text-white rounded-lg font-bold transition-all shadow-lg font-katana"
+            title="Voir la table de référence des ND"
+          >
+            ?
+          </button>
+          <button
+            @click="modeEditionCompetences = !modeEditionCompetences"
+            class="px-4 py-2 bg-gradient-to-b from-blue-700 to-blue-900 text-white rounded-lg font-bold transition-all shadow-lg font-katana"
+          >
+            {{ modeEditionCompetences ? '✓' : '✏️' }}
+          </button>
+          <button
+            @click="$emit('add-skill')"
+            class="px-4 py-2 bg-gradient-to-b from-green-700 to-green-900 text-white rounded-lg font-bold transition-all shadow-lg font-katana"
+          >
+            +
+          </button>
+        </div>
     </div>
   </div>
 </template>
@@ -131,14 +117,35 @@
 <script setup>
 const modeEditionCompetences = ref(false)
 
-defineProps({
+const props = defineProps({
   competences: {
     type: Array,
     required: true
+  },
+  personnageData: {
+    type: Object,
+    default: () => ({})
   }
 })
 
 defineEmits(['open-nd-modal', 'add-skill', 'save-skill', 'open-description-modal', 'delete-skill'])
+
+const getTraitValue = (traitName) => {
+  if (!traitName || !props.personnageData) return ''
+  
+  const traitMap = {
+    'Constitution': props.personnageData.constitution,
+    'Volonté': props.personnageData.volonte,
+    'Force': props.personnageData.force,
+    'Perception': props.personnageData.perception,
+    'Intelligence': props.personnageData.intelligence,
+    'Agilité': props.personnageData.agilite,
+    'Réflexes': props.personnageData.reflexes,
+    'Intuition': props.personnageData.intuition
+  }
+  
+  return traitMap[traitName] || ''
+}
 
 const calculerJet = (comp) => {
   // This function should be passed as a prop or computed in the parent

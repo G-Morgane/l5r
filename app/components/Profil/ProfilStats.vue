@@ -1,10 +1,10 @@
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-[2.25fr_1fr] gap-6">
     <!-- Honneur, Gloire, Statut, Souillure -->
-    <div class="rounded-xl px-4 py-2 relative overflow-hidden max-w-md">
-      <div class="absolute inset-0" style="background-image: url('/square_2.png'); background-size: 100% 100%;"></div>
-      <div class="relative z-10 pl-12 py-12">
-        <div class="space-y-3">
+    <div class="rounded-xl px-4 py-4 relative overflow-hidden">
+      <div class="absolute inset-0" style="background-image: url('/rectangle.png'); background-size: 100% 100%;"></div>
+      <div class="relative z-10 pl-18 py-4">
+        <div class="grid grid-cols-2">
           <div>
             <div class="flex items-center gap-2 mb-0.5">
               <label class="text-xs font-bold font-sigokae">Honneur</label>
@@ -104,40 +104,38 @@
     </div>
 
     <!-- Initiative & XP -->
-    <div class="rounded-xl p-4 border-2 border-amber-800/60 ring-4 ring-amber-900/30 shadow-2xl relative overflow-hidden bg-white/90">
-      <div class="absolute inset-0" style="background-image: url('/parchemin_side.png'); background-size: cover; background-position: center;"></div>
-      <div class="absolute inset-0 bg-amber-50/30"></div>
-      <div class="relative z-10 space-y-3">
+    <div class="rounded-xl px-4 pt-2 relative overflow-hidden">
+      <div class="absolute inset-0" style="background-image: url('/square_2.png'); background-size: 100% 100%;"></div>
+      <div class="relative z-10 px-12 py-4 space-y-3">
         <div>
-          <label class="text-sm font-bold text-center block mb-1 font-katana">INITIATIVE</label>
+          <label class="text-xs font-bold text-center block mb-1 font-katana">INITIATIVE</label>
           <input
             v-model.number="personnageData.initiative"
             type="number"
             @blur="$emit('save')"
-            class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-sm bg-white font-montserrat"
+            class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
           />
         </div>
         <div>
-          <label class="text-sm font-bold text-center block mb-1 font-katana">EXPÉRIENCE</label>
           <div class="grid grid-cols-3 gap-2">
             <div>
-              <label class="text-xs text-center block mb-1 font-montserrat">Total</label>
+              <label class="text-xs text-center block mb-1 font-montserrat">XP Total</label>
               <input
                 v-model.number="personnageData.experience_points"
                 type="number"
                 :min="minimumExperiencePoints"
                 @blur="if (personnageData.experience_points < minimumExperiencePoints) personnageData.experience_points = minimumExperiencePoints; $emit('save')"
-                class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-sm bg-white font-montserrat"
+                class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
               />
             </div>
             <div>
-              <label class="text-xs text-center block mb-1 font-montserrat">Dépensé</label>
+              <label class="text-xs text-center block mb-1 font-montserrat">XP Dépensé</label>
               <div class="flex items-center justify-center gap-1">
                 <input
                   :value="experienceDepenseAuto"
                   type="number"
                   readonly
-                  class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-sm bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
                 />
                 <button
                   @click="$emit('open-xp-modal')"
@@ -149,26 +147,25 @@
               </div>
             </div>
             <div>
-              <label class="text-xs text-center block mb-1 font-montserrat">Restant</label>
+              <label class="text-xs text-center block mb-1 font-montserrat">XP Restant</label>
               <input
                 :value="experienceRestant"
                 type="number"
                 readonly
-                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-sm bg-stone-100 font-montserrat cursor-not-allowed"
+                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
               />
             </div>
           </div>
         </div>
         <div>
-          <label class="text-sm font-bold text-center block mb-1 font-katana">RÉPUTATION</label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-xs text-center block mb-1 font-montserrat">Points</label>
+              <label class="text-xs text-center block mb-1 font-montserrat">Réputation Pts</label>
               <input
                 :value="reputationPoints"
                 type="number"
                 readonly
-                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-sm bg-stone-100 font-montserrat cursor-not-allowed"
+                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
               />
             </div>
             <div>
@@ -177,7 +174,7 @@
                 :value="rangReputation"
                 type="number"
                 readonly
-                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-sm bg-stone-100 font-montserrat cursor-not-allowed"
+                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
               />
             </div>
           </div>

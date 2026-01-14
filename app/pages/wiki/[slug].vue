@@ -32,13 +32,13 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Description -->
-        <div class="max-h-[80vh] lg:col-span-2 relative py-24 px-12" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: top; background-repeat: no-repeat;">
+        <div class="h-[100vh] lg:col-span-2 relative py-24 px-12" style="background-image: url('/square_2.png'); background-size: 100% 100%; background-position: top; background-repeat: no-repeat;">
           <div class="relative z-10 p-6">
             <div v-if="!modeEdition" class="prose max-w-none ">
               <!-- Informations complètes -->
               <div class="space-y-4 max-h-[60vh] overflow-y-auto">
                 <!-- Description principale -->
-                <div v-if="item.description" class="text-stone-800 font-montserrat text-sm">
+                <div v-if="item.description" class="text-stone-800 font-montserrat text-sm pl-24">
                   <div v-html="formatDescription(item.description)" class="leading-relaxed"></div>
                 </div>
                 
@@ -69,7 +69,7 @@
             </div>
 
             <div v-else>
-              <div class="prose max-w-none">
+              <div class="prose max-w-none max-h-[60vh] overflow-y-auto px-18">
                 <div class="space-y-4">
                   <RichTextEditor v-model="description" />
                 </div>
@@ -79,8 +79,8 @@
         </div>
 
         <!-- Liens (Wiki + Journal) -->
-        <div class="h-[80vh] w-full relative overflow-hidden px-12 pt-16" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
-          <div class="relative z-10">          
+        <div class="h-[100vh] w-full relative overflow-hidden px-12 pt-16" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
+          <div class="relative z-10 ml-8">          
           <!-- Champ d'ajout de liens wiki -->
           <div class="mb-6">
             <div class="relative flex gap-2 mb-3">

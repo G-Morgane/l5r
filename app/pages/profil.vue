@@ -2,15 +2,26 @@
   <div class="min-h-screen relative overflow-hidden">
     <!-- Fond image japonaise -->
     <div class="absolute inset-0">
-      <img 
-        src="/fond_long.png" 
-        alt="Japanese room background" 
-        class="w-full h-full object-contain object-top"
-      />
+      <!-- Partie supérieure -->
+      <div class="absolute top-0 left-0 right-0 h-1/2 overflow-hidden">
+        <img
+          src="/fond_long.png"
+          alt="Japanese room background top"
+          class="w-full h-full object-cover object-top"
+        />
+      </div>
+      <!-- Partie inférieure -->
+      <div class="absolute bottom-0 left-0 right-0 h-1/2 overflow-hidden">
+        <img
+          src="/fond_long.png"
+          alt="Japanese room background bottom"
+          class="w-full h-full object-cover object-bottom scale-x-[-1]"
+        />
+      </div>
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
     
-    <div class="container mx-auto px-4 py-8 relative z-10">
+    <div class="container mx-auto px-4 py-4 relative z-10">
       <!-- En-tête -->
       <div v-if="!personnageActif">
         <ProfilNoCharacter />
@@ -22,7 +33,7 @@
           @deselect="() => navigateTo('/')"
         />
         <!-- Section principale : Anneaux + Stats -->
-        <div class="space-y-6 mb-6">
+        <div class="space-y-3 mb-3">
           <!-- Ligne 1 : Tous les cercles -->
           <ProfilRings 
             :personnage-data="personnageData"
@@ -48,6 +59,7 @@
         <!-- Compétences -->
         <ProfilSkills 
           :competences="competences"
+          :personnage-data="personnageData"
           @open-nd-modal="modaleTableND = true"
           @add-skill="ajouterCompetence"
           @save-skill="sauvegarderCompetence"
@@ -123,25 +135,30 @@
           </div>
         </div>
 
-        <div  class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div class="flex flex-col gap-8">
+        <!-- Armes et Armures sur la même ligne -->
+
+
+        <div  class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+          <div class="flex flex-col gap-4">
              <ProfilResources 
             :ressources="ressources"
             @save-resources="sauvegarderRessources"
           />
-           <ProfilWeapons 
+                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+          <ProfilWeapons 
             :armes="armes"
             @add-weapon="ajouterArme"
             @save-weapon="sauvegarderArme"
             @delete-weapon="supprimerArme"
           />
-           <ProfilArmor 
+          <ProfilArmor 
             :armures="armures"
             @add-armor="ajouterArmure"
             @save-armor="sauvegarderArmure"
             @delete-armor="supprimerArmure"
-          /> 
-          <ProfilAdvantages 
+          />
+        </div>
+           <ProfilAdvantages 
             :avantages="avantages" 
             :avantages-tries="avantagesTries"
             @add-advantage="ajouterAvantage"
@@ -149,7 +166,7 @@
             @open-description-modal="ouvrirModaleDescriptionAvantage"
             @delete-advantage="supprimerAvantage"
           /></div>
-          <div class="flex flex-col gap-8">
+          <div class="flex flex-col gap-4">
            
           <ProfilBlessures
 
@@ -568,24 +585,17 @@ onMounted(async () => {
     avantages.value = avts
   }
 
-  // Charger les armes
-  const { data: arms } = await client
-    .from('armes')
+  // Charger les items de l'inventaire
+  const { data: inventoryItems } = await client
+    .from('inventory_items')
     .select('*')
-    .eq('personnage_id', personnageActif.value.id)
+    .eq('character_id', personnageActif.value.id)
 
-  if (arms) {
-    armes.value = arms
-  }
-
-  // Charger les armures
-  const { data: armrs } = await client
-    .from('armures')
-    .select('*')
-    .eq('personnage_id', personnageActif.value.id)
-
-  if (armrs) {
-    armures.value = armrs
+  if (inventoryItems) {
+    // Filtrer les armes (items de type 'weapon' et équipés)
+    armes.value = inventoryItems.filter(item => item.type === 'weapon' && item.is_equipped)
+    // Filtrer les armures (items de type 'armor' et équipés)
+    armures.value = inventoryItems.filter(item => item.type === 'armor' && item.is_equipped)
   }
 
   // Charger les ressources
@@ -720,12 +730,17 @@ const supprimerAvantage = async (id) => {
 // Armes
 const ajouterArme = async () => {
   const { data } = await client
-    .from('armes')
+    .from('inventory_items')
     .insert({
-      personnage_id: personnageActif.value.id,
-      nom: '',
-      type: '',
-      prix: ''
+      character_id: personnageActif.value.id,
+      name: '',
+      type: 'weapon',
+      description: '',
+      value: 0,
+      weight: 0,
+      rarity: 'common',
+      is_equipped: false,
+      quantity: 1
     })
     .select()
     .single()
@@ -737,14 +752,14 @@ const ajouterArme = async () => {
 
 const sauvegarderArme = async (arme) => {
   await client
-    .from('armes')
+    .from('inventory_items')
     .update(arme)
     .eq('id', arme.id)
 }
 
 const supprimerArme = async (id) => {
   await client
-    .from('armes')
+    .from('inventory_items')
     .delete()
     .eq('id', id)
 
@@ -754,12 +769,17 @@ const supprimerArme = async (id) => {
 // Armures
 const ajouterArmure = async () => {
   const { data } = await client
-    .from('armures')
+    .from('inventory_items')
     .insert({
-      personnage_id: personnageActif.value.id,
-      nom: '',
-      type: '',
-      prix: ''
+      character_id: personnageActif.value.id,
+      name: '',
+      type: 'armor',
+      description: '',
+      value: 0,
+      weight: 0,
+      rarity: 'common',
+      is_equipped: false,
+      quantity: 1
     })
     .select()
     .single()
@@ -771,14 +791,14 @@ const ajouterArmure = async () => {
 
 const sauvegarderArmure = async (armure) => {
   await client
-    .from('armures')
+    .from('inventory_items')
     .update(armure)
     .eq('id', armure.id)
 }
 
 const supprimerArmure = async (id) => {
   await client
-    .from('armures')
+    .from('inventory_items')
     .delete()
     .eq('id', id)
 

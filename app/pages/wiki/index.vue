@@ -1,7 +1,7 @@
 <template>
-  <div class="relative overflow-hidden">
+  <div class="relative overflow-hidden h-screen">
     <!-- Fond image japonaise -->
-    <div class="absolute inset-0" style="background-image: url('/fond_long.png'), url('/bas_fond.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
+    <div class="absolute inset-0" style="background-image: url('/fond_long.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
@@ -12,10 +12,10 @@
           @deselect="changeCharacter()"
         />
 
-      <div class="flex flex-col">
+      <div class="flex flex-col mt-12">
 
         <!-- Catégories principales -->
-        <div class="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="flex flex-wrap justify-between px-18">
           <NuxtLink
             to="/wiki/category-clans"
             class="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
@@ -23,7 +23,7 @@
             <img 
               src="/wiki/clans.png" 
               alt="Clans" 
-              class="w-full h-48 object-cover"
+              class="w-66 h-42 object-cover"
             />
           </NuxtLink>
           
@@ -34,7 +34,7 @@
             <img 
               src="/wiki/lieux.png" 
               alt="Lieux" 
-              class="w-full h-48 object-cover"
+              class="w-66 h-42 object-cover"
             />
           </NuxtLink>
           
@@ -45,7 +45,7 @@
             <img 
               src="/wiki/personnages.png" 
               alt="Personnages" 
-              class="w-full h-48 object-cover"
+              class="w-66 h-42 object-cover"
             />
           </NuxtLink>
           
@@ -56,7 +56,7 @@
             <img 
               src="/wiki/autre.png" 
               alt="Autre" 
-              class="w-full h-48 object-cover"
+              class="w-66 h-42 object-cover"
             />
           </NuxtLink>
         </div>

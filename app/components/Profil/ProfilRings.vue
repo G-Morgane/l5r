@@ -1,8 +1,8 @@
 <template>
-  <div class="px-6 pt-6 pb-3 relative overflow-hidden">
+  <div class="px-3 pt-3 pb-2 relative overflow-hidden">
     <div class="absolute inset-0" style="background-image: url('/parchemin_side_side.png'); background-size: 100% 100%;"></div>
     <div class="relative z-10">
-      <div class="flex flex-wrap justify-between gap-4 px-12">
+      <div class="flex flex-wrap justify-between gap-4 pt-3 pb-3 px-48">
         <!-- Terre -->
         <div class="flex flex-col items-center w-36">
           <div class="relative mb-2">
@@ -13,7 +13,7 @@
               v-model.number="personnageData.terre"
               type="number"
               @blur="$emit('save')"
-              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-amber-950 rounded-full text-center font-bold text-base shadow-lg font-montserrat appearance-none"
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-amber-950 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
           <div class="w-full space-y-0 text-xs">
@@ -48,7 +48,7 @@
               v-model.number="personnageData.eau"
               type="number"
               @blur="$emit('save')"
-              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-blue-950 rounded-full text-center font-bold text-base shadow-lg font-montserrat appearance-none"
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-blue-950 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
           <div class="w-full space-y-0 text-xs">
@@ -83,7 +83,7 @@
               v-model.number="personnageData.feu"
               type="number"
               @blur="$emit('save')"
-              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-red-950 rounded-full text-center font-bold text-base shadow-lg font-montserrat appearance-none"
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-red-950 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
           <div class="w-full space-y-0 text-xs">
@@ -118,7 +118,7 @@
               v-model.number="personnageData.air"
               type="number"
               @blur="$emit('save')"
-              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-gray-700 rounded-full text-center font-bold text-base shadow-lg font-montserrat appearance-none"
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-gray-700 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
           <div class="w-full space-y-0 text-xs">
@@ -153,7 +153,7 @@
               v-model.number="personnageData.vide"
               type="number"
               @blur="$emit('save')"
-              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-purple-950 rounded-full text-center font-bold text-base shadow-lg font-montserrat appearance-none"
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-purple-950 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
           <p class="text-[10px] text-center text-stone-600 italic font-montserrat">Points de Vide</p>

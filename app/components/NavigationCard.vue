@@ -1,9 +1,16 @@
 <template>
-  <NuxtLink :to="link" class="group block transition-transform duration-300 flex flex-col items-center justify-center" >
+  <NuxtLink :to="link" class="group block transition-all duration-300 flex flex-col items-center justify-center hover:scale-110" >
     <div class="relative">
-      <img :src="iconSrc" :alt="title" class="w-24 h-12 object-contain mb-2" />
+      <img :src="iconSrc" :alt="title" :class="[
+        'w-24 h-12 object-contain mb-2 transition-all duration-300',
+        isActive ? 'brightness-110 drop-shadow-lg scale-110' : 'group-hover:brightness-105 group-hover:scale-105'
+      ]" />
+      <div v-if="isActive" class="absolute -inset-2 bg-red-400/20 rounded-full animate-pulse"></div>
     </div>
-    <span class=" text-center font-bold text-stone-900 font-katana">{{ title }}</span>
+    <span :class="[
+      'text-center font-bold font-katana transition-all duration-300',
+      isActive ? 'text-red-900 scale-105' : 'text-stone-900 group-hover:text-red-600'
+    ]">{{ title }}</span>
   </NuxtLink>
 </template>
 
