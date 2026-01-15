@@ -211,3 +211,15 @@ CREATE POLICY "Permettre lecture publique maps" ON maps FOR SELECT USING (true);
 CREATE POLICY "Permettre écriture publique maps" ON maps FOR ALL USING (true);
 CREATE POLICY "Permettre lecture publique map_locations" ON map_locations FOR SELECT USING (true);
 CREATE POLICY "Permettre écriture publique map_locations" ON map_locations FOR ALL USING (true);
+
+-- Migration pour ajouter les colonnes de changement de stats dans journal_entries
+ALTER TABLE journal_entries
+ADD COLUMN IF NOT EXISTS xp_change DECIMAL(5,2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS honneur_change DECIMAL(5,2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS gloire_change DECIMAL(5,2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS statut_change DECIMAL(5,2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS souillure_change DECIMAL(5,2) DEFAULT 0;
+
+-- Ajouter la colonne statut_social à la table personnages si elle n'existe pas
+ALTER TABLE personnages
+ADD COLUMN IF NOT EXISTS statut_social INTEGER DEFAULT 1;

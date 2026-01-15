@@ -33,7 +33,7 @@
           @deselect="() => navigateTo('/')"
         />
         <!-- Section principale : Anneaux + Stats -->
-        <div class="space-y-3 mb-3">
+        <div class="space-y-3 mb-3 mx-24">
           <!-- Ligne 1 : Tous les cercles -->
           <ProfilRings 
             :personnage-data="personnageData"
@@ -48,6 +48,7 @@
             :experience-restant="experienceRestant"
             :reputation-points="reputationPoints"
             :rang-reputation="rangReputation"
+            :historique-changements="historiqueChangements"
             @save="sauvegarderPersonnage"
             @open-xp-modal="modaleDepenseXP = true"
           />
@@ -138,7 +139,7 @@
         <!-- Armes et Armures sur la même ligne -->
 
 
-        <div  class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+        <div  class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3 mx-24">
           <div class="flex flex-col gap-4">
              <ProfilResources 
             :ressources="ressources"
@@ -328,6 +329,8 @@ const ressources = ref({
   bu: 0,
   zeni: 0
 })
+
+const historiqueChangements = ref([])
 
 // Tri des avantages : avantages d'abord, désavantages ensuite
 const avantagesTries = computed(() => {
@@ -611,6 +614,9 @@ onMounted(async () => {
       if (r.type === 'zeni') ressources.value.zeni = r.montant
     })
   }
+
+  // Charger l'historique des changements
+  await chargerHistoriqueChangements()
 })
 
 // Calculer automatiquement les anneaux en fonction des traits
@@ -892,6 +898,22 @@ const xpDetails = computed(() => {
     desavantages: desavantagesList
   }
 })
+
+const chargerHistoriqueChangements = async () => {
+  if (!personnageActif.value?.id) return
+
+  const { data } = await client
+    .from('journal_entries')
+    .select('id, titre, date_session, xp_change, honneur_change, gloire_change, statut_change, souillure_change, created_at')
+    .eq('personnage_id', personnageActif.value.id)
+    .neq('xp_change', 0)
+    .or('honneur_change.neq.0,gloire_change.neq.0,statut_change.neq.0,souillure_change.neq.0')
+    .order('created_at', { ascending: false })
+
+  if (data) {
+    historiqueChangements.value = data
+  }
+}
 </script>
 
 <style scoped>

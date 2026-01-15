@@ -1,9 +1,9 @@
 <template>
-  <div class="rounded-xl p-2 relative overflow-hidden text-xs" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%;">
-    <div class="relative z-10 px-12 py-24 pl-24">
+  <div class="relative border-4 border-amber-800 bg-amber-50/30 text-xs before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+    <div class="relative z-10">
       <!-- Grand tableau unique -->
       <div class=" overflow-hidden">
-        <table class="w-full border-collapse px-24">
+        <table class="w-full border-collapse">
 
           <!-- 1. SECTION : INITIATIVE -->
           <thead>
@@ -48,7 +48,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="initiativeBaseCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -59,7 +59,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model.number="initiative.modificateurs"
                   type="number"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
                 />
               </td>
             </tr>
@@ -70,7 +70,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="initiativeActuelleCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -89,7 +89,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="ndArmureBaseCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -100,7 +100,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model.number="armure.ndModificateurs"
                   type="number"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
                 />
               </td>
             </tr>
@@ -111,7 +111,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="ndArmureActuelCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -131,7 +131,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model.number="armure.bonusNd"
                   type="number"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
                 />
               </td>
               <td class="py-2 px-2 font-montserrat font-medium border border-red-900">Réduction</td>
@@ -140,7 +140,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model.number="armure.reduction"
                   type="number"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
                 />
               </td>
             </tr>
@@ -151,7 +151,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model="armure.qualite"
                   type="text"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-xs bg-white font-montserrat"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
@@ -168,7 +168,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model="armure.notes"
                   type="text"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-xs bg-white font-montserrat"
                   placeholder="Notes sur l'armure..."
                 />
               </td>
@@ -183,244 +183,238 @@ watch(recuperationActuelleCalculee, (newValue) => {
           </thead>
           <tbody>
             <!-- Règles générales -->
-            <tr class="bg-amber-50 border-b-2 border-red-900">
+            <tr class="bg-amber-100">
               <td colspan="4" class="py-2 px-2">
-                <div class="text-xs font-montserrat text-stone-700 space-y-0.5">
+                <div class="flex flex-row gap-4">
+
+
+                <div class="text-xs font-montserrat text-stone-700 nowrap">
                   <div><strong>Règles générales :</strong></div>
                   <div>• Terre x2 par Rang</div>
                   <div>• Terre x5 pour Indemne</div>
                 </div>
+                 
+                <div class="py-2 px-2 font-montserrat font-medium flex flex-col justify-center items-center">
+                    
+                  Dégâts
+                  <input
+                    v-model.number="degatsTemp"
+                    type="number"
+                    @keydown.enter="addDegats"
+                    class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
+                    placeholder="0"
+                  />
+              </div>
+
+              <div class="py-2 px-2 font-montserrat font-medium flex flex-col justify-center items-center">
+                                Soins
+                      <input
+                    v-model.number="healTemp"
+                    type="number"
+                    @keydown.enter="applyHeal"
+                    class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
+                    placeholder="Heal"
+                  />
+              </div>
+              <div class="py-2 px-2 font-montserrat font-medium flex flex-col justify-center items-center">
+               <button
+                    @click="resetDegats"
+                    class="px-2 py-0.5 bg-red-600 text-white rounded text-xs font-montserrat font-medium hover:bg-red-700"
+                  >
+                    Reset
+                  </button></div>
+                                  </div>
               </td>
             </tr>
 
-            <!-- En-têtes du tableau blessures -->
+            <!-- Input pour dégâts -->
             <tr class="bg-amber-100 border-b-2 border-red-900">
-              <th class="py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Rang de Blessure</th>
-              <th class="py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Malus</th>
-              <th class="py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Total</th>
-              <th class="py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Actuel</th>
+              <th class="w-1/4 py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Rang de Blessure</th>
+              <th class="w-1/4 py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Malus</th>
+              <th class="w-1/4 py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Total</th>
+              <th class="w-1/4 py-1 px-2 font-bold text-red-900 font-katana text-xs border border-red-900">Actuel</th>
             </tr>
 
             <!-- Lignes de blessures -->
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': indemneActuelCalcule === 0, 'bg-yellow-200': activeIndex === 0 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Indemne</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.indemne.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.indemne.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="indemneTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.indemne.actuel"
+                  :value="indemneActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': egratigneActuelCalcule === 0, 'bg-yellow-200': activeIndex === 1 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Égratigné</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.egratigne.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.egratigne.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.egratigne.actuel"
+                  :value="egratigneActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': legerementBlesseActuelCalcule === 0, 'bg-yellow-200': activeIndex === 2 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Légèrement Blessé</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.legerementBlesse.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.legerementBlesse.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.legerementBlesse.actuel"
+                  :value="legerementBlesseActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': blesseActuelCalcule === 0, 'bg-yellow-200': activeIndex === 3 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Blessé</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.blesse.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.blesse.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.blesse.actuel"
+                  :value="blesseActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': gravementBlesseActuelCalcule === 0, 'bg-yellow-200': activeIndex === 4 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Gravement Blessé</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.gravementBlesse.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.gravementBlesse.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.gravementBlesse.actuel"
+                  :value="gravementBlesseActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': impotentActuelCalcule === 0, 'bg-yellow-200': activeIndex === 5 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">Impotent</td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.impotent.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.impotent.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.impotent.actuel"
+                  :value="impotentActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': epuiseActuelCalcule === 0, 'bg-yellow-200': activeIndex === 6 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">
                 <div>Épuisé</div>
                 <div class="text-xs text-stone-600 italic">Doit utiliser un Pts de Vide pour agir</div>
               </td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.epuise.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.epuise.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.epuise.actuel"
+                  :value="epuiseActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
-            <tr class="border-b border-red-900">
+            <tr class="border-b border-red-900" :class="{ 'opacity-25': horsCombatActuelCalcule === 0, 'bg-yellow-200': activeIndex === 7 }">
               <td class="py-2 px-2 font-montserrat border border-red-900">
                 <div>Hors de Combat</div>
                 <div class="text-xs text-stone-600 italic">Ne peut pas agir</div>
               </td>
               <td class="py-2 px-2 border border-red-900">
-                <input
-                  v-model.number="blessures.horsCombat.malus"
-                  type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
-                />
+                <span class="w-full text-center font-bold text-xs font-montserrat">{{ -blessures.horsCombat.malus }}</span>
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
                   :value="autresBlessuresTotalCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
               <td class="py-2 px-2 border border-red-900">
                 <input
-                  v-model.number="blessures.horsCombat.actuel"
+                  :value="horsCombatActuelCalcule"
                   type="number"
-                  @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  readonly
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -440,7 +434,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="recuperationBaseCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -451,7 +445,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   v-model.number="recuperation.modificateurs"
                   type="number"
                   @blur="$emit('save')"
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-transparent font-montserrat"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
                 />
               </td>
             </tr>
@@ -462,7 +456,7 @@ watch(recuperationActuelleCalculee, (newValue) => {
                   :value="recuperationActuelleCalculee"
                   type="number"
                   readonly
-                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
+                  class="w-full border border-stone-400 rounded px-1 py-0.5 text-center font-bold text-xs bg-stone-200 font-montserrat cursor-not-allowed"
                 />
               </td>
             </tr>
@@ -614,4 +608,153 @@ watch(recuperationActuelleCalculee, (newValue) => {
 }, { immediate: true })
 
 // TODO: Connecter avec les vraies données du personnage
+
+const degats = ref(0)
+const degatsTemp = ref(0)
+const healTemp = ref(0)
+
+// Fonctions pour gérer les dégâts
+const addDegats = () => {
+  degats.value += degatsTemp.value
+  degatsTemp.value = 0
+  // $emit('save')
+}
+
+const applyHeal = () => {
+  degats.value = Math.max(0, degats.value - healTemp.value)
+  healTemp.value = 0
+  // $emit('save')
+}
+
+const resetDegats = () => {
+  degats.value = 0
+  degatsTemp.value = 0
+  healTemp.value = 0
+  // $emit('save')
+}
+
+// Computed pour les actuels des blessures basés sur les dégâts
+const indemneActuelCalcule = computed(() => {
+  return Math.max(0, indemneTotalCalculee.value - degats.value)
+})
+
+const degatsApresIndemne = computed(() => Math.max(0, degats.value - indemneTotalCalculee.value))
+
+const egratigneActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresIndemne.value)
+})
+
+const degatsApresEgratigne = computed(() => Math.max(0, degatsApresIndemne.value - autresBlessuresTotalCalculee.value))
+
+const legerementBlesseActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresEgratigne.value)
+})
+
+const degatsApresLegerementBlesse = computed(() => Math.max(0, degatsApresEgratigne.value - autresBlessuresTotalCalculee.value))
+
+const blesseActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresLegerementBlesse.value)
+})
+
+const degatsApresBlesse = computed(() => Math.max(0, degatsApresLegerementBlesse.value - autresBlessuresTotalCalculee.value))
+
+const gravementBlesseActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresBlesse.value)
+})
+
+const degatsApresGravementBlesse = computed(() => Math.max(0, degatsApresBlesse.value - autresBlessuresTotalCalculee.value))
+
+const impotentActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresGravementBlesse.value)
+})
+
+const degatsApresImpotent = computed(() => Math.max(0, degatsApresGravementBlesse.value - autresBlessuresTotalCalculee.value))
+
+const epuiseActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresImpotent.value)
+})
+
+const degatsApresEpuise = computed(() => Math.max(0, degatsApresImpotent.value - autresBlessuresTotalCalculee.value))
+
+const horsCombatActuelCalcule = computed(() => {
+  return Math.max(0, autresBlessuresTotalCalculee.value - degatsApresEpuise.value)
+})
+
+// Liste des actuels et totaux pour calculer l'index actif
+const actuels = computed(() => [
+  indemneActuelCalcule.value,
+  egratigneActuelCalcule.value,
+  legerementBlesseActuelCalcule.value,
+  blesseActuelCalcule.value,
+  gravementBlesseActuelCalcule.value,
+  impotentActuelCalcule.value,
+  epuiseActuelCalcule.value,
+  horsCombatActuelCalcule.value
+])
+
+const totaux = computed(() => [
+  indemneTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value,
+  autresBlessuresTotalCalculee.value
+])
+
+// Index de la ligne active (première où actuel < total)
+const activeIndex = computed(() => {
+  for (let i = 0; i < actuels.value.length; i++) {
+    if (actuels.value[i] < totaux.value[i]) {
+      return i
+    }
+  }
+  return -1
+})
+
+// Synchroniser les actuels calculés avec les ref blessures
+watch(indemneActuelCalcule, (newValue) => {
+  blessures.value.indemne.actuel = newValue
+}, { immediate: true })
+
+watch(egratigneActuelCalcule, (newValue) => {
+  blessures.value.egratigne.actuel = newValue
+}, { immediate: true })
+
+watch(legerementBlesseActuelCalcule, (newValue) => {
+  blessures.value.legerementBlesse.actuel = newValue
+}, { immediate: true })
+
+watch(blesseActuelCalcule, (newValue) => {
+  blessures.value.blesse.actuel = newValue
+}, { immediate: true })
+
+watch(gravementBlesseActuelCalcule, (newValue) => {
+  blessures.value.gravementBlesse.actuel = newValue
+}, { immediate: true })
+
+watch(impotentActuelCalcule, (newValue) => {
+  blessures.value.impotent.actuel = newValue
+}, { immediate: true })
+
+watch(epuiseActuelCalcule, (newValue) => {
+  blessures.value.epuise.actuel = newValue
+}, { immediate: true })
+
+watch(horsCombatActuelCalcule, (newValue) => {
+  blessures.value.horsCombat.actuel = newValue
+}, { immediate: true })
+
+// Sauvegarder quand les dégâts changent
+watch(degats, () => {
+  // $emit('save') si nécessaire pour sauvegarder automatiquement
+}, { immediate: true })
 </script>
+
+
+<style scoped>
+  .nowrap {
+    text-wrap: nowrap;
+  }
+</style>

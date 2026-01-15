@@ -1,8 +1,6 @@
 <template>
-  <div class=" p-3 relative overflow-hidden px-12 py-12">
-    <div class="absolute inset-0" style="background-image: url('/square_2.png'); background-size: 100% 100%; "></div>
-    <div class="relative z-10">
-      <div class="flex justify-between items-center mb-4">
+  <div class="relative p-2 border-4 border-amber-800 bg-amber-50/30 px-6 py-6 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+    <div class="relative z-10 flex justify-between items-center mb-4">
         <h2 class="text-xs font-bold text-red-900 font-sakurata">🛡️ Armures</h2>
         <div class="flex gap-2">
           <button
@@ -14,10 +12,10 @@
           </button>
         </div>
       </div>
-      <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
+      <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
         <!-- Mode édition -->
         <template v-if="modeEditionArmures">
-          <div v-for="armure in armures" :key="armure.id" class="border-2 border-amber-800/40 rounded-lg p-3 bg-white/60">
+          <div v-for="armure in armures" :key="armure.id" class="border-2 border-amber-800/40 rounded-lg p-2 bg-white/60">
             <div class="flex justify-between items-start mb-2">
               <input
                 v-model="armure.name"
@@ -47,7 +45,7 @@
         </template>
         <!-- Mode lecture -->
         <template v-else>
-          <div v-for="armure in armures" :key="armure.id" class="border-2 border-amber-800/40 rounded-lg p-3 bg-white/60">
+          <div v-for="armure in armures" :key="armure.id" class="border-2 border-amber-800/40 rounded-lg p-2 bg-white/60">
             <div class="font-bold text-xs font-montserrat mb-1">{{ armure.name || 'Sans nom' }}</div>
             <div class="flex gap-4 text-xs text-stone-700">
               <div><span class="font-semibold">ND Armure:</span> {{ armure.armor_rating || '-' }}</div>
@@ -58,7 +56,6 @@
           Aucune armure
         </div>
       </div>
-    </div>
   </div>
 </template>
 

@@ -1,8 +1,6 @@
 <template>
-  <div class="px-3 pt-3 pb-2 relative overflow-hidden">
-    <div class="absolute inset-0" style="background-image: url('/parchemin_side_side.png'); background-size: 100% 100%;"></div>
-    <div class="relative z-10">
-      <div class="flex flex-wrap justify-between gap-4 pt-3 pb-3 px-48">
+  <div class="relative px-2 pt-2 pb-1 border-4 border-amber-800 bg-amber-50/30 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+    <div class="relative z-10 flex flex-wrap justify-between gap-4 pt-2 pb-2 px-4">
         <!-- Terre -->
         <div class="flex flex-col items-center w-36">
           <div class="relative mb-2">
@@ -17,7 +15,7 @@
             />
           </div>
           <div class="w-full space-y-0 text-xs">
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Constitution</label>
               <input
                 v-model.number="personnageData.constitution"
@@ -26,7 +24,7 @@
                 class="w-9 border border-stone-300 rounded px-1 py-0.5 text-center font-bold bg-white font-montserrat appearance-none"
               />
             </div>
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Volonté</label>
               <input
                 v-model.number="personnageData.volonte"
@@ -52,7 +50,7 @@
             />
           </div>
           <div class="w-full space-y-0 text-xs">
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Force</label>
               <input
                 v-model.number="personnageData.force"
@@ -61,7 +59,7 @@
                 class="w-9 border border-stone-300 rounded px-1 py-0.5 text-center font-bold bg-white font-montserrat appearance-none"
               />
             </div>
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Perception</label>
               <input
                 v-model.number="personnageData.perception"
@@ -87,7 +85,7 @@
             />
           </div>
           <div class="w-full space-y-0 text-xs">
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Intelligence</label>
               <input
                 v-model.number="personnageData.intelligence"
@@ -96,7 +94,7 @@
                 class="w-9 border border-stone-300 rounded px-1 py-0.5 text-center font-bold bg-white font-montserrat appearance-none"
               />
             </div>
-            <div class="flex items-center justify-between px-4">
+            <div class="flex items-center justify-between px-2">
               <label class="font-semibold font-montserrat text-[10px]">Agilité</label>
               <input
                 v-model.number="personnageData.agilite"
@@ -156,10 +154,9 @@
               class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 bg-white border-2 border-purple-950 rounded-full text-center font-bold text-xs shadow-lg font-montserrat appearance-none"
             />
           </div>
-          <p class="text-[10px] text-center text-stone-600 italic font-montserrat">Points de Vide</p>
+          <p class="text-[10px] text-center text-stone-800 italic font-montserrat font-bold">Points de Vide</p>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

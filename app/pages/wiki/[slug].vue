@@ -19,7 +19,7 @@
       />
 
       <!-- En-tête -->
-      <div class="mb-8 w-full">
+      <div class="mb-8 w-full px-24">
         <div class="flex items-center justify-between mb-6">
           <div class="flex gap-4">
             <BackButton @click="$router.push('/wiki')" class="mb-0" blanc>← Retour au Wiki</BackButton>
@@ -30,15 +30,15 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-24">
         <!-- Description -->
-        <div class="h-[100vh] lg:col-span-2 relative py-24 px-12" style="background-image: url('/square_2.png'); background-size: 100% 100%; background-position: top; background-repeat: no-repeat;">
+        <div class="h-[100vh] lg:col-span-2 relative border-4 border-amber-800 bg-amber-50/30 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
           <div class="relative z-10 p-6">
             <div v-if="!modeEdition" class="prose max-w-none ">
               <!-- Informations complètes -->
-              <div class="space-y-4 max-h-[60vh] overflow-y-auto">
+              <div class="space-y-4 max-h-[95vh] overflow-y-auto">
                 <!-- Description principale -->
-                <div v-if="item.description" class="text-stone-800 font-montserrat text-sm pl-24">
+                <div v-if="item.description" class="text-stone-800 font-montserrat text-sm">
                   <div v-html="formatDescription(item.description)" class="leading-relaxed"></div>
                 </div>
                 
@@ -69,7 +69,7 @@
             </div>
 
             <div v-else>
-              <div class="prose max-w-none max-h-[60vh] overflow-y-auto px-18">
+              <div class="prose max-w-none max-h-[95vh] overflow-y-auto">
                 <div class="space-y-4">
                   <RichTextEditor v-model="description" />
                 </div>
@@ -79,7 +79,7 @@
         </div>
 
         <!-- Liens (Wiki + Journal) -->
-        <div class="h-[100vh] w-full relative overflow-hidden px-12 pt-16" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
+        <div class="h-[100vh] w-full relative overflow-hidden px-6 pt-16" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
           <div class="relative z-10 ml-8">          
           <!-- Champ d'ajout de liens wiki -->
           <div class="mb-6">
@@ -119,15 +119,18 @@
           <div class="space-y-4">
             <!-- Liens Wiki sortants -->
             <div v-if="item.tags && item.tags.length > 0">
-              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">🏷️ Pages Wiki liées</h3>
+              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">Pages Wiki liées</h3>
               <div class="flex flex-wrap gap-2">
                 <NuxtLink
                   v-for="(tag, index) in item.tags" 
                   :key="index"
                   :to="getWikiItemByName(tag)?.slug ? `/wiki/${getWikiItemByName(tag).slug}` : '#'"
-                  class="inline-flex items-center gap-2 px-3 py-1 bg-amber-200 hover:bg-amber-300 text-stone-800 rounded-lg font-montserrat text-sm font-medium transition-all group"
+                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all group"
+                  :style="{ backgroundColor: '#EFB6A6' }"
+                  onMouseOver="this.style.backgroundColor='#E5B999'"
+                  onMouseOut="this.style.backgroundColor='#EFB6A6'"
                 >
-                  🔗 {{ tag }}
+                  {{ emojiParCategorie[getWikiItemByName(tag)?.categorie] || '🔗' }} {{ tag }}
                   <button 
                     type="button"
                     @click.prevent="retirerTag(index)"
@@ -141,13 +144,16 @@
 
             <!-- Liens Wiki entrants (Mentionné dans) -->
             <div v-if="itemsLies.length > 0">
-              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">📖 Mentionné dans</h3>
+              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">Mentionné dans</h3>
               <div class="flex flex-wrap gap-2">
                 <NuxtLink
                   v-for="itemLie in itemsLies"
                   :key="itemLie.id"
                   :to="`/wiki/${itemLie.slug}`"
-                  class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 hover:bg-amber-200 text-stone-800 rounded-lg font-montserrat text-sm font-medium transition-all border border-amber-300"
+                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all border"
+                  :style="{ backgroundColor: '#EFB6A6', borderColor: '#EFB6A6' }"
+                  onMouseOver="this.style.backgroundColor='#EFB6A6'"
+                  onMouseOut="this.style.backgroundColor='#F1C5A9'"
                 >
                   <span>{{ emojiParCategorie[itemLie.categorie] || '📦' }}</span>
                   {{ itemLie.nom }}
@@ -157,13 +163,15 @@
 
             <!-- Entrées de journal liées -->
             <div v-if="entreesLiees.length > 0">
-              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">📚 Entrées de journal</h3>
+              <h3 class="text-sm font-bold text-stone-700 font-montserrat mb-2">Entrées de journal</h3>
               <div class="flex flex-wrap gap-2">
                 <NuxtLink
                   v-for="entree in entreesLiees"
                   :key="entree.id"
                   :to="`/journal?entry=${entree.id}`"
-                  class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded-lg font-montserrat text-sm font-medium transition-all border border-blue-300"
+                  class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-montserrat text-sm font-medium transition-all
+                  
+                  "
                   :title="entree.titre"
                 >
                   📖 {{ entree.titre }}

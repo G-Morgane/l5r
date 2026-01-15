@@ -1,23 +1,22 @@
 <template>
-  <div class="rounded-xl p-3 relative overflow-hidden mb-6 pt-12">
-    <div class="absolute inset-0" style="background-image: url('/parchemin_side_side.png'); background-size: 100% 100%; background-position: center;"></div>
-    <div class="relative z-10 px-12 flex flex-row gap-4 items-center">
-      <div class="overflow-x-auto max-h-[40vh] overflow-y-auto rounded-lg p-2 flex-1">
+  <div class="relative mx-24 p-2 border-4 border-amber-800 bg-amber-50/30 mb-6 pt-6 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+    <div class="relative z-10 px-6 flex flex-row gap-4 items-center">
+      <div class="overflow-x-auto max-h-[40vh] overflow-y-auto rounded-lg p-1 flex-1">
         <table class="w-full text-xs">
           <thead>
             <tr class="border-b-2 border-red-900">
-              <th class="text-left py-2 px-2 font-bold w-40 font-katana">Compétence</th>
-              <th class="text-center py-2 px-2 font-bold w-16 font-katana">Rang</th>
-              <th class="text-center py-2 px-2 font-bold w-32 font-katana">Trait</th>
-              <th class="text-center py-2 px-2 font-bold w-20 font-katana">Jet</th>
-              <th class="text-left py-2 px-2 font-bold w-24 font-katana">Spécialisations</th>
-              <th class="text-center py-2 px-2 font-bold w-20 font-katana">Description</th>
+              <th class="text-left py-1 px-1 font-bold w-40 font-katana">Compétence</th>
+              <th class="text-center py-1 px-1 font-bold w-16 font-katana">Rang</th>
+              <th class="text-center py-1 px-1 font-bold w-32 font-katana">Trait</th>
+              <th class="text-center py-1 px-1 font-bold w-20 font-katana">Jet</th>
+              <th class="text-left py-1 px-1 font-bold w-24 font-katana">Spécialisations</th>
+              <th class="text-center py-1 px-1 font-bold w-20 font-katana">Description</th>
               <th class="w-10"></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="comp in competences" :key="comp.id" class="border-b border-stone-300 hover:bg-amber-50/30">
-              <td class="py-2 px-2">
+              <td class="py-1 px-1">
                 <input
                   v-if="modeEditionCompetences"
                   v-model="comp.nom"
@@ -26,7 +25,7 @@
                 />
                 <span v-else class="font-montserrat">{{ comp.nom }}</span>
               </td>
-              <td class="py-2 px-2">
+              <td class="py-1 px-1">
                 <input
                   v-if="modeEditionCompetences"
                   v-model.number="comp.rang"
@@ -36,7 +35,7 @@
                 />
                 <span v-else class="font-montserrat font-bold text-center block">{{ comp.rang }}</span>
               </td>
-              <td class="py-2 px-2">
+              <td class="py-1 px-1">
                 <input
                   v-if="modeEditionCompetences"
                   v-model="comp.trait"
@@ -47,10 +46,10 @@
                   {{ comp.trait }}{{ getTraitValue(comp.trait) ? ` (${getTraitValue(comp.trait)})` : '' }}
                 </span>
               </td>
-              <td class="py-2 px-2 text-center">
+              <td class="py-1 px-1 text-center">
                 <span class="font-montserrat font-bold text-green-700">{{ calculerJet(comp) }}</span>
               </td>
-              <td class="py-2 px-2">
+              <td class="py-1 px-1">
                 <input
                   v-if="modeEditionCompetences"
                   v-model="comp.specialisations"
@@ -60,7 +59,7 @@
                 />
                 <span v-else class="font-montserrat text-xs">{{ comp.specialisations }}</span>
               </td>
-              <td class="py-2 px-2 text-center">
+              <td class="py-1 px-1 text-center">
                 <button
                   @click="$emit('open-description-modal', comp)"
                   class="px-2 py-1 text-white rounded text-xs font-bold font-katana"
@@ -69,7 +68,7 @@
                   📝
                 </button>
               </td>
-              <td class="py-2 px-2">
+              <td class="py-1 px-1">
                 <button
                   v-if="modeEditionCompetences"
                   @click="$emit('delete-skill', comp.id)"

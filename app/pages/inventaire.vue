@@ -31,7 +31,7 @@
 
       <!-- Contenu principal -->
       <div class="max-h-[80vh] relative overflow-y-auto">
-        <div class="relative z-10 p-6">
+        <div class="relative z-10 p-6 px-24">
           <!-- Avertissement si tables non créées -->
           <div v-if="!tablesExist" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             <div class="flex items-center">
@@ -50,12 +50,12 @@
             <!-- Filtres - Types à gauche, Équipement à droite -->
             <div class="flex justify-between items-center font-montserrat">
               <!-- Filtrage par type avec tags -->
-              <div class="flex flex-wrap gap-1 font-montserrat">
+              <div class="flex flex-wrap gap-3 font-montserrat">
                 <button
                   @click="selectedTypeFilter = ''"
-                  :class="selectedTypeFilter === '' ? 'text-black font-montserrat' : 'bg-gray-200 text-gray-700 font-montserrat'"
-                  class="px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
-                  :style="{ backgroundColor: selectedTypeFilter === '' ? '#fcd34d' : undefined }"
+                  :class="selectedTypeFilter === '' ? 'text-black font-montserrat scale-110' : 'text-black font-montserrat'"
+                  class="px-3 py-1 text-sm font-medium transition-all font-sigokae"
+                  :style="{ backgroundColor: '#fcd34d' , opacity: selectedTypeFilter === '' ? '1' : '0.6' }"
                 >
                   Tous
                 </button>
@@ -63,9 +63,9 @@
                   v-for="type in availableTypes"
                   :key="type.value"
                   @click="selectedTypeFilter = type.value"
-                  :class="selectedTypeFilter === type.value ? 'text-black' : 'bg-gray-200 text-gray-700'"
-                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors capitalize font-sigokae"
-                  :style="{ backgroundColor: selectedTypeFilter === type.value ? getTypeColor(type.value) : undefined }"
+                  :class="selectedTypeFilter === type.value ? 'text-black scale-110' : 'text-black'"
+                  class="font-montserrat px-3 py-1 text-sm font-medium transition-all capitalize font-sigokae"
+                  :style="{ backgroundColor: getTypeColor(type.value), opacity: selectedTypeFilter === type.value ? '1' : '0.6' }"
                 >
                   {{ type.label }}
                 </button>
@@ -75,47 +75,71 @@
               <div class="flex gap-2">
                 <button
                   @click="selectedEquipFilter = ''"
-                  :class="selectedEquipFilter === '' ? 'text-black' : 'bg-gray-200 text-gray-700'"
-                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
-                  :style="{ backgroundColor: selectedEquipFilter === '' ? '#6ee7b7' : undefined }"
+                  :class="selectedEquipFilter === '' ? 'text-black scale-110' : 'text-black'"
+                  class="font-montserrat px-3 py-1 text-sm font-medium transition-all font-sigokae"
+                  :style="{ backgroundColor: '#6ee7b7' , opacity: selectedEquipFilter === '' ? '1' : '0.6' }"
                 >
                   Tous
                 </button>
                 <button
                   @click="selectedEquipFilter = 'equipped'"
-                  :class="selectedEquipFilter === 'equipped' ? 'text-black' : 'bg-gray-200 text-gray-700'"
-                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
-                  :style="{ backgroundColor: selectedEquipFilter === 'equipped' ? '#93c5fd' : undefined }"
+                  :class="selectedEquipFilter === 'equipped' ? 'text-black scale-110' : 'text-black'"
+                  class="font-montserrat px-3 py-1 text-sm font-medium transition-all font-sigokae"
+                  :style="{ backgroundColor: '#93c5fd', opacity: selectedEquipFilter === 'equipped' ? '1' : '0.6' }"
                 >
                   Équipés
                 </button>
                 <button
                   @click="selectedEquipFilter = 'unequipped'"
-                  :class="selectedEquipFilter === 'unequipped' ? 'text-black' : 'bg-gray-200 text-gray-700'"
-                  class="font-montserrat px-3 py-1 rounded text-sm font-medium transition-colors font-sigokae"
-                  :style="{ backgroundColor: selectedEquipFilter === 'unequipped' ? '#fca5a5' : undefined }"
+                  :class="selectedEquipFilter === 'unequipped' ? 'text-black scale-110' : 'text-black'"
+                  class="font-montserrat px-3 py-1 text-sm font-medium transition-all font-sigokae"
+                  :style="{ backgroundColor: '#fca5a5', opacity: selectedEquipFilter === 'unequipped' ? '1' : '0.6' }"
                 >
                   Non équipés
                 </button>
               </div>
             </div>
 
+            <!-- Filtres par tags -->
+            <div v-if="filterableTags.length > 0" class="flex flex-wrap gap-3 font-montserrat">
+              <span class="text-sm font-medium text-stone-700 self-center">Tags :</span>
+              <button
+                v-for="tag in filterableTags"
+                :key="tag.id"
+                @click="toggleTagFilter(tag.id)"
+                :class="activeTagFilters.includes(tag.id) ? 'text-black scale-110 ring-2 ring-amber-500' : 'text-black'"
+                class="px-3 py-1 text-sm font-medium transition-all font-sigokae"
+                :style="{ backgroundColor: tag.color, opacity: activeTagFilters.includes(tag.id) ? '1' : '0.6' }"
+              >
+                {{ tag.name }}
+              </button>
+            </div>
+
             <!-- Barre de recherche et bouton ajout -->
             <div class="flex items-center gap-2">
-              <button
-                @click="showAddItemModal = true"
-                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 font-sigokae"
-              >
-                <Icon name="heroicons:plus" class="w-5 h-5" />
-                Ajouter
-              </button>
-              <input
-                v-model="searchQuery"
-                @input="applyFilters"
-                type="text"
-                placeholder="Nom, description..."
-                class="flex-1 px-3 py-2 border border-stone-300 rounded-md bg-white text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-sigokae"
-              />
+              <div class="relative flex-1">
+                <div class="relative rounded-xl overflow-hidden">
+                  <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
+                  <div class="absolute inset-0 bg-amber-50/30"></div>
+                  <input
+                    v-model="searchQuery"
+                    @input="applyFilters"
+                    type="text"
+                    placeholder="🔍 Nom, description..."
+                    class="relative z-10 w-full bg-transparent border-2 border-amber-800/60 focus:border-amber-700 rounded-xl px-4 py-2 pr-10 transition-all outline-none text-stone-900 placeholder:text-stone-500 font-montserrat text-sm"
+                  />
+                </div>
+                <button
+                  v-if="searchQuery"
+                  @click="searchQuery = ''"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-900 transition-colors text-xl font-bold z-20"
+                >
+                  ×
+                </button>
+              </div>
+              <BackButton @click="openCreateDrawer">
+Ajouter
+              </BackButton>
             </div>
           </div>
           <!-- Tags actifs -->
@@ -126,8 +150,8 @@
             v-for="tag in activeTags"
             :key="tag.id"
             @click="removeTagFilter(tag.id)"
-            class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-            :style="{ backgroundColor: tag.color + '20', color: tag.color, border: `1px solid ${tag.color}` }"
+            class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-black"
+            :style="{ backgroundColor: tag.color, border: `1px solid ${tag.color}` }"
           >
             {{ tag.name }}
             <Icon name="heroicons:x-mark" class="w-3 h-3" />
@@ -142,7 +166,7 @@
       </div>
 
       <!-- Liste des objets -->
-      <div class="grid grid-cols-4">
+      <div class="flex flex-row flex-wrap gap-4">
         <div
           v-for="item in filteredItems"
           :key="item.id"
@@ -162,7 +186,7 @@
             </div>
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="px-2 py-1 rounded-full text-xs font-medium font-montserrat"
+                class="px-2 py-1 text-xs font-medium font-montserrat"
                 :style="{ backgroundColor: getTypeColor(item.type), color: '#374151' }"
               >
                 {{ translateType(item.type) }}
@@ -181,123 +205,293 @@
       </div>
 
       <!-- Drawer pour les détails d'objet -->
-      <div v-if="selectedItem" class="fixed inset-0 z-50 flex">
+      <div v-if="selectedItem || isEditingMode" class="fixed inset-0 z-50 flex">
         <!-- Overlay -->
-        <div @click="closeItemDrawer" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div @click="closeModal" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
         
         <!-- Drawer panel -->
-        <div class="relative ml-auto w-full max-w-md h-full" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;">
-          <div class="relative z-10 p-6 h-full flex flex-col mt-24 pl-12">
+        <div class="relative ml-auto w-[60vw] h-full border-l-4 border-amber-800 bg-amber-50/70" >
+          <div class="relative z-10 p-4 h-full flex flex-col pl-8">
             <!-- Header -->
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-black font-montserrat">{{ selectedItem.name }}</h2>
-              <button @click="closeItemDrawer" class="p-2 text-black hover:text-gray-700 transition-colors">
-                <Icon name="heroicons:x-mark" class="w-6 h-6" />
-              </button>
+              <h2 class="text-xl font-bold text-black font-montserrat">
+                {{ isEditingMode ? (editingItem ? 'Modifier l\'objet' : 'Nouvel objet') : selectedItem?.name }}
+              </h2>
+              <div class="flex gap-3">
+                <template v-if="isEditingMode">
+                  <button
+                    type="button"
+                    @click="handleSave"
+                    class="px-4 py-2 bg-green-500/40 hover:bg-green-500/80 text-black font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+                  >
+                    <Icon name="heroicons:check" class="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    @click="closeModal"
+                    class="px-4 py-2 bg-gray-500/40 hover:bg-gray-500/80 text-black font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+                  >
+                    <Icon name="heroicons:x-mark" class="w-4 h-4" />
+                  </button>
+                </template>
+                <template v-else-if="selectedItem">
+                  <button
+                    type="button"
+                    @click="editItem(selectedItem)"
+                    class="px-4 py-2 bg-amber-500/40 hover:bg-amber-500/80 text-black font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+                  >
+                    <Icon name="heroicons:pencil" class="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    @click="deleteItem(selectedItem)"
+                    class="px-4 py-2 bg-red-500/40 hover:bg-red-500/80 text-black font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
+                  >
+                    <Icon name="heroicons:trash" class="w-4 h-4" />
+                  </button>
+                </template>
+              </div>
             </div>
 
             <!-- Contenu scrollable -->
-            <div class="flex-1 overflow-y-auto space-y-6 max-h-[62vh] ">
-              <!-- État d'équipement -->
-              <div class="flex items-center gap-3">
-                <button
-                  @click="toggleEquip(selectedItem)"
-                  :class="selectedItem.is_equipped ? 'bg-green-500 hover:bg-green-600' : 'bg-stone-400 hover:bg-stone-500'"
-                  class="px-4 py-2 text-black text-sm rounded-lg transition-colors flex items-center gap-2 font-montserrat"
-                >
-                  <Icon :name="selectedItem.is_equipped ? 'heroicons:check' : 'heroicons:plus'" class="w-4 h-4" />
-                  {{ selectedItem.is_equipped ? 'Déséquiper' : 'Équiper' }}
-                </button>
-                <div class="flex items-center gap-2">
-                  <Icon :name="selectedItem.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
-                        :class="selectedItem.is_equipped ? 'text-green-600' : 'text-gray-600'"
-                        class="w-5 h-5" />
-                  <span class="text-sm text-black font-montserrat">
-                    {{ selectedItem.is_equipped ? 'Équipé' : 'Non équipé' }}
-                  </span>
-                </div>
-              </div>
+            <div class="flex-1 overflow-y-auto space-y-4 max-h-[80vh]">
 
-              <!-- Informations de base -->
-              <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
+              <!-- MODE ÉDITION -->
+              <template v-if="isEditingMode">
+                <form @submit.prevent="handleSave" class="space-y-4">
+                  <!-- Nom -->
+                  <div class="pb-3 border-b border-red-900">
+                    <label class="block text-sm font-medium mb-2 text-black font-montserrat">Nom *</label>
+                    <input
+                      v-model="form.name"
+                      type="text"
+                      required
+                      class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                      placeholder="Nom de l'objet"
+                    />
+                  </div>
+
+                  <!-- Type -->
+                  <div class="pb-3 border-b border-red-900">
+                    <label class="block text-sm font-medium mb-2 text-black font-montserrat">Type *</label>
+                    <select
+                      v-model="form.type"
+                      required
+                      class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                    >
+                      <option value="">Sélectionner un type</option>
+                      <option value="weapon">Arme</option>
+                      <option value="armor">Armure</option>
+                      <option value="shield">Bouclier</option>
+                      <option value="item">Objet</option>
+                      <option value="consumable">Consommable</option>
+                      <option value="tool">Outil</option>
+                    </select>
+                  </div>
+
+                  <!-- Champs spécifiques selon le type -->
+                  <div v-if="form.type === 'weapon'" class="pb-3 border-b border-red-900">
+                    <div class="grid grid-cols-1 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium mb-2 text-black font-montserrat">Dégâts</label>
+                        <input
+                          v-model="form.damage"
+                          type="text"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                          placeholder="ex: 3k2, 4k3+1"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium mb-2 text-black font-montserrat">Type de dégâts</label>
+                        <select
+                          v-model="form.damage_type"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                        >
+                          <option value="">Sélectionner</option>
+                          <option value="slashing">Tranchant</option>
+                          <option value="piercing">Perçant</option>
+                          <option value="blunt">Contondant</option>
+                          <option value="fire">Feu</option>
+                          <option value="magic">Magique</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="form.type === 'armor'" class="pb-3 border-b border-red-900">
+                    <div>
+                      <label class="block text-sm font-medium mb-2 text-black font-montserrat">Armure (ND)</label>
+                      <input
+                        v-model.number="form.armor_rating"
+                        type="number"
+                        min="0"
+                        class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                        placeholder="ex: 4"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Valeur, Quantité, Poids -->
+                  <div class="pb-3 border-b border-red-900">
+                    <div class="grid grid-cols-3 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium mb-2 text-black font-montserrat">Valeur (koku)</label>
+                        <input
+                          v-model.number="form.value"
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium mb-2 text-black font-montserrat">Quantité</label>
+                        <input
+                          v-model.number="form.quantity"
+                          type="number"
+                          min="1"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                          placeholder="1"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium mb-2 text-black font-montserrat">Poids (kg)</label>
+                        <input
+                          v-model.number="form.weight"
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Description -->
+                  <div class="pb-3 border-b border-red-900">
+                    <label class="block text-sm font-medium mb-2 text-black font-montserrat">Description</label>
+                    <textarea
+                      v-model="form.description"
+                      rows="3"
+                      class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white font-montserrat"
+                      placeholder="Description de l'objet..."
+                    ></textarea>
+                  </div>
+
+                  <!-- Tags -->
                   <div>
-                    <span class="text-sm font-semibold text-black font-montserrat">Type</span>
-                    <p class="text-black capitalize font-montserrat">{{ translateType(selectedItem.type) }}</p>
+                    <label class="block text-sm font-medium mb-2 text-black font-montserrat">Tags</label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                      <button
+                        v-for="tag in availableTags"
+                        :key="tag.id"
+                        type="button"
+                        @click="toggleTag(tag.id)"
+                        :class="selectedTags.includes(tag.id) ? 'ring-2 ring-amber-500' : ''"
+                        class="px-3 py-1 text-sm font-medium font-montserrat text-black transition-all"
+                        :style="{ backgroundColor: tag.color, border: `1px solid ${tag.color}` }"
+                      >
+                        {{ tag.name }}
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <span class="text-sm font-semibold text-black font-montserrat">Valeur</span>
-                    <p class="text-black font-montserrat">{{ selectedItem.value }} koku</p>
-                  </div>
-                  <div v-if="selectedItem.quantity > 1">
-                    <span class="text-sm font-semibold text-black font-montserrat">Quantité</span>
-                    <p class="text-black font-montserrat">{{ selectedItem.quantity }}</p>
-                  </div>
-                  <div v-if="selectedItem.weight > 0">
-                    <span class="text-sm font-semibold text-black font-montserrat">Poids</span>
-                    <p class="text-black font-montserrat">{{ selectedItem.weight }} kg</p>
+                </form>
+              </template>
+
+              <!-- MODE VUE DÉTAILLÉE -->
+              <template v-else-if="selectedItem">
+                <!-- État d'équipement -->
+                <div class="pb-4 border-b border-red-900">
+                  <div class="flex items-center gap-3">
+                    <button
+                      @click="toggleEquip(selectedItem)"
+                      :class="selectedItem.is_equipped ? 'bg-green-500/30 hover:bg-green-500/80' : 'bg-stone-400/50 hover:bg-stone-500/80'"
+                      class="px-4 py-2 text-black text-sm transition-colors flex items-center gap-2 font-montserrat"
+                    >
+                      <Icon :name="selectedItem.is_equipped ? 'heroicons:check' : 'heroicons:plus'" class="w-4 h-4" />
+                      {{ selectedItem.is_equipped ? 'Déséquiper' : 'Équiper' }}
+                    </button>
+                    <div class="flex items-center gap-2">
+                      <Icon :name="selectedItem.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
+                            :class="selectedItem.is_equipped ? 'text-green-600' : 'text-gray-600'"
+                            class="w-5 h-5" />
+                      <span class="text-sm text-black font-montserrat">
+                        {{ selectedItem.is_equipped ? 'Équipé' : 'Non équipé' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Description -->
-              <div v-if="selectedItem.description">
-                <h3 class="text-lg font-semibold text-black mb-2 font-montserrat">Description</h3>
-                <p class="text-black leading-relaxed font-montserrat">{{ selectedItem.description }}</p>
-              </div>
-
-              <!-- Propriétés spécifiques -->
-              <div class="space-y-3">
-                <div v-if="selectedItem.type === 'weapon' && selectedItem.damage" class="flex items-center gap-3">
-                  <Icon name="heroicons:bolt" class="w-5 h-5 text-red-600" />
-                  <div>
-                    <span class="text-sm font-semibold text-black font-montserrat">Dégâts</span>
-                    <p class="text-black font-montserrat">{{ selectedItem.damage }}
-                      <span v-if="selectedItem.damage_type" class="text-black font-montserrat">({{ translateDamageType(selectedItem.damage_type) }})</span>
-                    </p>
+                <!-- Informations de base -->
+                <div class="pb-4 border-b border-red-900">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <span class="text-sm font-semibold text-black font-montserrat">Type</span>
+                      <p class="text-black capitalize font-montserrat">{{ translateType(selectedItem.type) }}</p>
+                    </div>
+                    <div>
+                      <span class="text-sm font-semibold text-black font-montserrat">Valeur</span>
+                      <p class="text-black font-montserrat">{{ selectedItem.value }} koku</p>
+                    </div>
+                    <div v-if="selectedItem.quantity > 1">
+                      <span class="text-sm font-semibold text-black font-montserrat">Quantité</span>
+                      <p class="text-black font-montserrat">{{ selectedItem.quantity }}</p>
+                    </div>
+                    <div v-if="selectedItem.weight > 0">
+                      <span class="text-sm font-semibold text-black font-montserrat">Poids</span>
+                      <p class="text-black font-montserrat">{{ selectedItem.weight }} kg</p>
+                    </div>
                   </div>
                 </div>
 
-                <div v-if="selectedItem.type === 'armor' && selectedItem.armor_rating" class="flex items-center gap-3">
-                  <Icon name="heroicons:shield-check" class="w-5 h-5 text-blue-600" />
-                  <div>
-                    <span class="text-sm font-semibold text-black font-montserrat">Armure</span>
-                    <p class="text-black font-montserrat">{{ selectedItem.armor_rating }}</p>
+                <!-- Description -->
+                <div v-if="selectedItem.description" class="pb-4 border-b border-red-900">
+                  <h3 class="text-lg font-semibold text-black mb-2 font-montserrat">Description</h3>
+                  <p class="text-black leading-relaxed font-montserrat">{{ selectedItem.description }}</p>
+                </div>
+
+                <!-- Propriétés spécifiques -->
+                <div v-if="(selectedItem.type === 'weapon' && selectedItem.damage) || (selectedItem.type === 'armor' && selectedItem.armor_rating)" class="pb-4 border-b border-red-900">
+                  <div class="space-y-3">
+                    <div v-if="selectedItem.type === 'weapon' && selectedItem.damage" class="flex items-center gap-3">
+                      <Icon name="heroicons:bolt" class="w-5 h-5 text-red-600" />
+                      <div>
+                        <span class="text-sm font-semibold text-black font-montserrat">Dégâts</span>
+                        <p class="text-black font-montserrat">{{ selectedItem.damage }}
+                          <span v-if="selectedItem.damage_type" class="text-black font-montserrat">({{ translateDamageType(selectedItem.damage_type) }})</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div v-if="selectedItem.type === 'armor' && selectedItem.armor_rating" class="flex items-center gap-3">
+                      <Icon name="heroicons:shield-check" class="w-5 h-5 text-blue-600" />
+                      <div>
+                        <span class="text-sm font-semibold text-black font-montserrat">Armure</span>
+                        <p class="text-black font-montserrat">{{ selectedItem.armor_rating }}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Tags -->
-              <div v-if="selectedItem.tags && selectedItem.tags.length > 0">
-                <h3 class="text-lg font-semibold text-black mb-3 font-montserrat">Tags</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    v-for="tag in selectedItem.tags"
-                    :key="tag.id"
-                    class="px-3 py-1 rounded-full text-sm font-medium font-montserrat"
-                    :style="{ backgroundColor: tag.color + '40', color: 'black', border: `1px solid ${tag.color}` }"
-                  >
-                    {{ tag.name }}
-                  </span>
+                <!-- Tags -->
+                <div v-if="selectedItem.tags && selectedItem.tags.length > 0">
+                  <h3 class="text-lg font-semibold text-black mb-3 font-montserrat">Tags</h3>
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      v-for="tag in selectedItem.tags"
+                      :key="tag.id"
+                      class="px-3 py-1 text-sm font-medium font-montserrat text-black"
+                      :style="{ backgroundColor: tag.color, border: `1px solid ${tag.color}` }"
+                    >
+                      {{ tag.name }}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </template>
             </div>
 
-            <!-- Actions du bas -->
-            <div class="mt-6 pl-36 flex gap-3">
-              <button
-                @click="editItem(selectedItem)"
-                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-black rounded-lg font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
-              >
-                <Icon name="heroicons:pencil" class="w-4 h-4" />
-                            </button>
-              <button
-                @click="deleteItem(selectedItem)"
-                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-black rounded-lg font-medium transition-colors flex items-center justify-center gap-2 font-montserrat"
-              >
-                <Icon name="heroicons:trash" class="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -317,13 +511,7 @@
     </div>
 
     <!-- Modal d'ajout/modification d'objet -->
-    <ItemModal
-      v-if="showAddItemModal || editingItem"
-      :item="editingItem"
-      :available-tags="availableTags"
-      @save="saveItem"
-      @close="closeModal"
-    />
+    <!-- ItemModal supprimé - maintenant intégré dans le drawer -->
   </div>
 </template>
 
@@ -356,6 +544,7 @@ interface ItemTag {
   name: string
   color: string
   description?: string
+  is_filterable?: boolean
 }
 
 // État réactif
@@ -370,6 +559,19 @@ const activeTagFilters = ref<string[]>([])
 const expandedItems = ref<Set<string>>(new Set())
 const tablesExist = ref(true)
 const selectedItem = ref<InventoryItem | null>(null)
+const isEditingMode = ref(false)
+const form = ref({
+  name: '',
+  type: '',
+  description: '',
+  value: 0,
+  damage: '',
+  damage_type: '',
+  armor_rating: undefined as number | undefined,
+  weight: 0,
+  quantity: 1
+})
+const selectedTags = ref<string[]>([])
 
 // Computed
 const filteredItems = computed(() => {
@@ -411,6 +613,10 @@ const filteredItems = computed(() => {
 
 const activeTags = computed(() => {
   return availableTags.value.filter(tag => activeTagFilters.value.includes(tag.id))
+})
+
+const filterableTags = computed(() => {
+  return availableTags.value.filter(tag => tag.is_filterable)
 })
 
 const availableTypes = computed(() => [
@@ -516,7 +722,59 @@ const loadTags = async () => {
       return
     }
 
-    availableTags.value = data as ItemTag[]
+    let tags = data as ItemTag[]
+
+    // Ajouter les tags par défaut s'ils n'existent pas
+    const defaultTags = [
+      { name: 'NÉCESSAIRE DE VOYAGE', color: '#8b5cf6', is_filterable: true },
+      { name: 'Petit', color: '#6b7280', is_filterable: false },
+      { name: 'Moyen', color: '#6b7280', is_filterable: false },
+      { name: 'Grand', color: '#6b7280', is_filterable: false }
+    ]
+
+    for (const defaultTag of defaultTags) {
+      const existingTag = tags.find(tag => tag.name === defaultTag.name)
+      if (!existingTag) {
+        // Insérer le tag par défaut dans la base de données
+        const { data: newTag, error: insertError } = await supabase
+          .from('item_tags')
+          .insert({
+            name: defaultTag.name,
+            color: defaultTag.color,
+            description: defaultTag.is_filterable ? 'Tag filtrable' : 'Tag descriptif'
+          })
+          .select()
+          .single()
+
+        if (!insertError && newTag) {
+          tags.push({ ...newTag, is_filterable: defaultTag.is_filterable })
+        }
+      } else {
+        // Mettre à jour la propriété is_filterable
+        existingTag.is_filterable = defaultTag.is_filterable
+      }
+    }
+
+    // Trier les tags selon l'ordre spécifié
+    const tagOrder = ['Commun', 'Rare', 'Petit', 'Moyen', 'Grand', 'Magique', 'Consommable', 'Outil', 'Nécessaire de voyage']
+    tags.sort((a, b) => {
+      const indexA = tagOrder.indexOf(a.name)
+      const indexB = tagOrder.indexOf(b.name)
+      
+      // Si les deux tags sont dans la liste d'ordre, trier selon l'ordre
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB
+      }
+      
+      // Si seulement un est dans la liste, le mettre en premier
+      if (indexA !== -1) return -1
+      if (indexB !== -1) return 1
+      
+      // Sinon, trier alphabétiquement
+      return a.name.localeCompare(b.name)
+    })
+
+    availableTags.value = tags
   } catch (error) {
     console.warn('Erreur lors du chargement des tags:', error)
     tablesExist.value = false
@@ -540,6 +798,17 @@ const removeTagFilter = (tagId: string) => {
 
 const clearAllTagFilters = () => {
   activeTagFilters.value = []
+}
+
+const toggleTagFilter = (tagId: string) => {
+  if (activeTagFilters.value.includes(tagId)) {
+    removeTagFilter(tagId)
+  } else {
+    const tag = availableTags.value.find(t => t.id === tagId)
+    if (tag) {
+      addTagFilter(tag)
+    }
+  }
 }
 
 const toggleItemExpansion = (itemId: string) => {
@@ -577,8 +846,42 @@ const toggleEquip = async (item: InventoryItem) => {
   }
 }
 
+const openCreateDrawer = () => {
+  editingItem.value = null
+  selectedItem.value = null
+  isEditingMode.value = true
+  // Initialiser le formulaire pour création
+  form.value = {
+    name: '',
+    type: '',
+    description: '',
+    value: 0,
+    damage: '',
+    damage_type: '',
+    armor_rating: undefined,
+    weight: 0,
+    quantity: 1
+  }
+  selectedTags.value = []
+}
+
 const editItem = (item: InventoryItem) => {
   editingItem.value = { ...item }
+  selectedItem.value = item
+  isEditingMode.value = true
+  // Initialiser le formulaire avec les données de l'item
+  form.value = {
+    name: item.name,
+    type: item.type,
+    description: item.description || '',
+    value: item.value,
+    damage: item.damage || '',
+    damage_type: item.damage_type || '',
+    armor_rating: item.armor_rating || undefined,
+    weight: item.weight,
+    quantity: item.quantity
+  }
+  selectedTags.value = item.tags?.map(tag => tag.id) || []
 }
 
 const deleteItem = async (item: InventoryItem) => {
@@ -667,11 +970,18 @@ const saveItem = async (itemData: Partial<InventoryItem>) => {
     }
 
     await loadItems()
-    closeModal()
-    
-    // Fermer le drawer si c'était l'item modifié
+    // Ne pas fermer le drawer, juste repasser en mode non-édition
+    isEditingMode.value = false
+    editingItem.value = null
+    // Recharger l'item sélectionné pour afficher les changements
     if (selectedItem.value && selectedItem.value.id === savedItem.id) {
-      closeItemDrawer()
+      selectedItem.value = savedItem
+      // Recharger les tags de l'item
+      const updatedItem = await loadItems()
+      const foundItem = items.value.find(item => item.id === savedItem.id)
+      if (foundItem) {
+        selectedItem.value = foundItem
+      }
     }
   } catch (error) {
     console.error('Erreur inattendue:', error)
@@ -679,9 +989,28 @@ const saveItem = async (itemData: Partial<InventoryItem>) => {
   }
 }
 
+const toggleTag = (tagId: string) => {
+  const index = selectedTags.value.indexOf(tagId)
+  if (index > -1) {
+    selectedTags.value.splice(index, 1)
+  } else {
+    selectedTags.value.push(tagId)
+  }
+}
+
+const handleSave = async () => {
+  const itemData = {
+    ...form.value,
+    tags: availableTags.value.filter(tag => selectedTags.value.includes(tag.id))
+  }
+  await saveItem(itemData)
+}
+
 const closeModal = () => {
   showAddItemModal.value = false
   editingItem.value = null
+  isEditingMode.value = false
+  selectedItem.value = null
 }
 
 const changeCharacter = () => {

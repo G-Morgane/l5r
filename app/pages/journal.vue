@@ -183,6 +183,64 @@
                 </div>
               </div>
               
+              <!-- Section changements XP et autres valeurs -->
+              <div>
+                <label class="block text-sm font-semibold mb-3 text-stone-800 font-montserrat">📊 Changements de valeurs</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-amber-50/50 rounded-xl border-2 border-amber-900/20">
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">XP</label>
+                    <input 
+                      v-model.number="nouvelleEntree.xp_change" 
+                      type="number" 
+                      step="1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Honneur</label>
+                    <input 
+                      v-model.number="nouvelleEntree.honneur_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Gloire</label>
+                    <input 
+                      v-model.number="nouvelleEntree.gloire_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Statut</label>
+                    <input 
+                      v-model.number="nouvelleEntree.statut_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Souillure</label>
+                    <input 
+                      v-model.number="nouvelleEntree.souillure_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                <p class="text-xs text-stone-600 mt-2 font-montserrat">Entrez les valeurs gagnées (+) ou perdues (-) lors de cette session</p>
+              </div>
+              
               <div>
                 <label class="block text-sm font-semibold mb-3 text-stone-800 font-montserrat">✍️ Récit de la session *</label>
                 <RichTextEditor 
@@ -214,7 +272,7 @@
 
       <!-- Drawer détail -->
       <div v-if="entreeSelectionnee || createMode" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" @click.self="closeDrawer">
-        <div class="absolute right-0 top-[-40px] h-[110vh] w-[40vw] flex flex-col" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center;">
+        <div class="absolute right-0 top-[-40px] h-[110vh] w-[60vw] flex flex-col" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center;">
           <!-- En-tête -->
           <div class="relative overflow-hidden">
             <div class="relative px-6 py-4 flex items-center justify-between">
@@ -244,6 +302,47 @@
                     {{ getTagEmoji(tag) }} {{ tag }}
                   </NuxtLink>
                 </div>
+
+            <!-- Section changements de valeurs -->
+            <div v-if="hasStatChanges(entreeSelectionnee)">
+              <div class="flex flex-row flex-wrap gap-2 text-xs font-montserrat">
+                <div v-if="entreeSelectionnee.xp_change !== 0" class="bg-blue-50 px-2 py-2">
+                  <span class=" text-sm">XP :</span>
+                  <span :class="entreeSelectionnee.xp_change > 0 ? 'text-green-600' : 'text-red-600'" class="font-bold">
+                    {{ entreeSelectionnee.xp_change > 0 ? ' +' : '' }}{{ entreeSelectionnee.xp_change }}
+                  </span>
+                </div>
+
+                <div v-if="entreeSelectionnee.honneur_change !== 0" class="bg-yellow-50 px-2 py-2">
+                  <span class=" text-sm">Honneur :</span>
+                  <span :class="entreeSelectionnee.honneur_change > 0 ? 'text-green-600' : 'text-red-600'" class="font-bold">
+                    {{ entreeSelectionnee.honneur_change > 0 ? ' +' : '' }}{{ entreeSelectionnee.honneur_change }}
+                  </span>
+                </div>
+
+                <div v-if="entreeSelectionnee.gloire_change !== 0" class="bg-purple-50 px-2 py-2">
+                  <span class=" text-sm">Gloire :</span>
+                  <span :class="entreeSelectionnee.gloire_change > 0 ? 'text-green-600' : 'text-red-600'" class="font-bold">
+                    {{ entreeSelectionnee.gloire_change > 0 ? '+' : '' }}{{ entreeSelectionnee.gloire_change }}
+                  </span>
+                </div>
+
+                <div v-if="entreeSelectionnee.statut_change !== 0" class="bg-green-50 px-2 py-2">
+                  <span class=" text-sm">Statut : </span>
+                  <span :class="entreeSelectionnee.statut_change > 0 ? 'text-green-600' : 'text-red-600'" class="font-bold">
+                    {{ entreeSelectionnee.statut_change > 0 ? '+' : '' }}{{ entreeSelectionnee.statut_change }}
+                  </span>
+                </div>
+
+                <div v-if="entreeSelectionnee.souillure_change !== 0" class="bg-red-50 px-2 py-2">
+                  <span class=" text-sm">Souillure : </span>
+                  <span :class="entreeSelectionnee.souillure_change > 0 ? 'text-green-600' : 'text-red-600'" class="font-bold">
+                    {{ entreeSelectionnee.souillure_change > 0 ? '+' : '' }}{{ entreeSelectionnee.souillure_change }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div class="prose prose-stone max-w-none text-stone-900 font-montserrat leading-relaxed journal-content text-sm" v-html="formatContent(entreeSelectionnee.contenu)"></div>
           </div>
 
@@ -318,6 +417,64 @@
                 <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">📖 Contenu *</label>
                 <RichTextEditor v-model="nouvelleEntree.contenu" />
               </div>
+
+              <!-- Section changements XP et autres valeurs -->
+              <div>
+                <label class="block text-sm font-semibold mb-3 text-stone-800 font-montserrat">📊 Changements de valeurs</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-amber-50/50 rounded-xl border-2 border-amber-900/20">
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">XP</label>
+                    <input 
+                      v-model.number="nouvelleEntree.xp_change" 
+                      type="number" 
+                      step="1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Honneur</label>
+                    <input 
+                      v-model.number="nouvelleEntree.honneur_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Gloire</label>
+                    <input 
+                      v-model.number="nouvelleEntree.gloire_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Statut</label>
+                    <input 
+                      v-model.number="nouvelleEntree.statut_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1 text-stone-700 font-montserrat">Souillure</label>
+                    <input 
+                      v-model.number="nouvelleEntree.souillure_change" 
+                      type="number" 
+                      step="0.1"
+                      class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-lg px-3 py-2 transition-all outline-none text-stone-900 font-montserrat text-sm" 
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                <p class="text-xs text-stone-600 mt-2 font-montserrat">Entrez les valeurs gagnées (+) ou perdues (-) lors de cette session</p>
+              </div>
             </form>
           </div>
 
@@ -370,7 +527,12 @@ const nouvelleEntree = ref({
   titre: '',
   contenu: '',
   date_session: new Date().toISOString().split('T')[0],
-  tags: []
+  tags: [],
+  xp_change: 0,
+  honneur_change: 0,
+  gloire_change: 0,
+  statut_change: 0,
+  souillure_change: 0
 })
 
 // Rediriger si pas de personnage actif
@@ -530,13 +692,21 @@ const creerEntree = async () => {
       .single()
 
     if (!error && data) {
+      // Appliquer les changements aux valeurs du personnage
+      await appliquerChangementsPersonnage(nouvelleEntree.value)
+      
       const index = entries.value.findIndex(e => e.id === data.id)
       if (index !== -1) entries.value[index] = data
       nouvelleEntree.value = {
         titre: '',
         contenu: '',
         date_session: new Date().toISOString().split('T')[0],
-        tags: []
+        tags: [],
+        xp_change: 0,
+        honneur_change: 0,
+        gloire_change: 0,
+        statut_change: 0,
+        souillure_change: 0
       }
       afficherFormulaire.value = false
       entreeEnEdition.value = null
@@ -557,12 +727,20 @@ const creerEntree = async () => {
       .single()
 
     if (!error && data) {
+      // Appliquer les changements aux valeurs du personnage
+      await appliquerChangementsPersonnage(nouvelleEntree.value)
+      
       entries.value.unshift(data)
       nouvelleEntree.value = {
         titre: '',
         contenu: '',
         date_session: new Date().toISOString().split('T')[0],
-        tags: []
+        tags: [],
+        xp_change: 0,
+        honneur_change: 0,
+        gloire_change: 0,
+        statut_change: 0,
+        souillure_change: 0
       }
       afficherFormulaire.value = false
       closeDrawer()
@@ -585,7 +763,12 @@ const startCreation = () => {
     titre: '',
     contenu: '',
     date_session: new Date().toISOString().split('T')[0],
-    tags: []
+    tags: [],
+    xp_change: 0,
+    honneur_change: 0,
+    gloire_change: 0,
+    statut_change: 0,
+    souillure_change: 0
   }
   afficherSuggestions.value = false
   nouveauTag.value = ''
@@ -609,7 +792,12 @@ const modifierEntree = (entry) => {
     titre: entry.titre,
     contenu: entry.contenu,
     date_session: entry.date_session,
-    tags: entry.tags || []
+    tags: entry.tags || [],
+    xp_change: entry.xp_change || 0,
+    honneur_change: entry.honneur_change || 0,
+    gloire_change: entry.gloire_change || 0,
+    statut_change: entry.statut_change || 0,
+    souillure_change: entry.souillure_change || 0
   }
   drawerMode.value = 'edit'
   afficherSuggestions.value = false
@@ -650,7 +838,89 @@ const supprimerEntree = async (id) => {
   if (!error) {
     entries.value = entries.value.filter(e => e.id !== id)
     entreeSelectionnee.value = null
+    
+    // Recalculer les stats du personnage après suppression
+    await recalculerStatsPersonnage()
   }
+}
+
+const appliquerChangementsPersonnage = async (changements) => {
+  if (!personnageActif.value?.id) return
+
+  // Récupérer les données actuelles du personnage
+  const { data: perso } = await client
+    .from('personnages')
+    .select('*')
+    .eq('id', personnageActif.value.id)
+    .single()
+
+  if (!perso) return
+
+  // Calculer les nouvelles valeurs
+  const nouvellesValeurs = {
+    experience_points: (perso.experience_points || 0) + (changements.xp_change || 0),
+    honneur: Math.max(0, Math.min(10, (perso.honneur || 5) + (changements.honneur_change || 0))),
+    gloire: Math.max(0, Math.min(10, (perso.gloire || 0) + (changements.gloire_change || 0))),
+    statut_social: Math.max(0, Math.min(10, (perso.statut_social || 1) + (changements.statut_change || 0))),
+    souillure: Math.max(0, Math.min(10, (perso.souillure || 0) + (changements.souillure_change || 0)))
+  }
+
+  // Mettre à jour le personnage
+  await client
+    .from('personnages')
+    .update(nouvellesValeurs)
+    .eq('id', personnageActif.value.id)
+}
+
+const recalculerStatsPersonnage = async () => {
+  if (!personnageActif.value?.id) return
+
+  // Récupérer toutes les entrées de journal du personnage
+  const { data: entries } = await client
+    .from('journal_entries')
+    .select('xp_change, honneur_change, gloire_change, statut_change, souillure_change')
+    .eq('personnage_id', personnageActif.value.id)
+
+  if (!entries) return
+
+  // Calculer la somme de tous les changements
+  const totalChangements = entries.reduce((acc, entry) => ({
+    xp_change: acc.xp_change + (entry.xp_change || 0),
+    honneur_change: acc.honneur_change + (entry.honneur_change || 0),
+    gloire_change: acc.gloire_change + (entry.gloire_change || 0),
+    statut_change: acc.statut_change + (entry.statut_change || 0),
+    souillure_change: acc.souillure_change + (entry.souillure_change || 0)
+  }), {
+    xp_change: 0,
+    honneur_change: 0,
+    gloire_change: 0,
+    statut_change: 0,
+    souillure_change: 0
+  })
+
+  // Valeurs de base par défaut
+  const valeursBase = {
+    experience_points: 0,
+    honneur: 5,
+    gloire: 0,
+    statut_social: 1,
+    souillure: 0
+  }
+
+  // Calculer les nouvelles valeurs basées sur les valeurs de base + somme des changements
+  const nouvellesValeurs = {
+    experience_points: valeursBase.experience_points + totalChangements.xp_change,
+    honneur: Math.max(0, Math.min(10, valeursBase.honneur + totalChangements.honneur_change)),
+    gloire: Math.max(0, Math.min(10, valeursBase.gloire + totalChangements.gloire_change)),
+    statut_social: Math.max(0, Math.min(10, valeursBase.statut_social + totalChangements.statut_change)),
+    souillure: Math.max(0, Math.min(10, valeursBase.souillure + totalChangements.souillure_change))
+  }
+
+  // Mettre à jour le personnage
+  await client
+    .from('personnages')
+    .update(nouvellesValeurs)
+    .eq('id', personnageActif.value.id)
 }
 
 const formatDate = (dateString) => {
@@ -683,6 +953,14 @@ const formatContent = (content) => {
 const getRandomJournalImage = (index) => {
   const images = ['/journal/arbre.png', '/journal/batiment.png', '/journal/drapeau.png', '/journal/oni.png']
   return images[index % images.length]
+}
+
+const hasStatChanges = (entry) => {
+  return (entry.xp_change && entry.xp_change !== 0) ||
+         (entry.honneur_change && entry.honneur_change !== 0) ||
+         (entry.gloire_change && entry.gloire_change !== 0) ||
+         (entry.statut_change && entry.statut_change !== 0) ||
+         (entry.souillure_change && entry.souillure_change !== 0)
 }
 </script>
 

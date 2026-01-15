@@ -1,23 +1,20 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-[2.25fr_1fr] gap-6">
     <!-- Honneur, Gloire, Statut, Souillure -->
-    <div class="rounded-xl px-4 py-4 relative overflow-hidden">
-      <div class="absolute inset-0" style="background-image: url('/rectangle.png'); background-size: 100% 100%;"></div>
-      <div class="relative z-10 pl-18 py-4">
-        <div class="grid grid-cols-2">
+    <div class="relative px-2 py-2 border-4 border-amber-800 bg-amber-50/30 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+      <div class="relative z-10 px-4 py-2">
+        <div class="flex flex-row flex-wrap gap-4 justify-between">
           <div>
             <div class="flex items-center gap-2 mb-0.5">
               <label class="text-xs font-bold font-sigokae">Honneur</label>
-              <input
-                v-model.number="personnageData.honneur"
-                type="number"
-                step="0.1"
-                min="0"
-                max="10"
-                @blur="$emit('save')"
-                class="text-center font-bold text-xs font-montserrat"
-                :style="{ color: '#B84601' }"
-              />
+              <button
+                @mouseenter="showTooltip('honneur'); updateTooltipPosition($event)"
+                @mouseleave="hideTooltip"
+                class="w-4 h-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center text-xs font-montserrat font-bold"
+                title="Historique des changements d'honneur"
+              >
+                ?
+              </button>
             </div>
             <div class="flex items-center gap-1">
               <img src="/profil/honneur.png" alt="Honneur" class="w-10 h-10" />
@@ -36,16 +33,14 @@
             <div class="flex items-center gap-2 mb-0.5">
               
               <label class="text-xs font-bold font-sigokae">Gloire</label>
-              <input
-                v-model.number="personnageData.gloire"
-                type="number"
-                step="0.1"
-                min="0"
-                max="10"
-                @blur="$emit('save')"
-                class="text-center font-bold text-xs font-montserrat"
-                :style="{ color: '#BB1103' }"
-              />
+              <button
+                @mouseenter="showTooltip('gloire'); updateTooltipPosition($event)"
+                @mouseleave="hideTooltip"
+                class="w-4 h-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center text-xs font-bold"
+                title="Historique des changements de gloire"
+              >
+                ?
+              </button>
             </div>
             <div class="flex items-center gap-1">
               <img src="/profil/gloire.png" alt="Gloire" class="w-10 h-10" />
@@ -58,16 +53,14 @@
           <div>
             <div class="flex items-center gap-2 mb-0.5">
               <label class="text-xs font-bold font-sigokae">Statut</label>
-              <input
-                v-model.number="personnageData.statut_social"
-                type="number"
-                step="0.1"
-                min="0"
-                max="10"
-                @blur="$emit('save')"
-                class="text-center font-bold text-xs font-montserrat"
-                :style="{  color: '#A29181' }"
-              />
+              <button
+                @mouseenter="showTooltip('statut'); updateTooltipPosition($event)"
+                @mouseleave="hideTooltip"
+                class="w-4 h-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center text-xs font-bold"
+                title="Historique des changements de statut"
+              >
+                ?
+              </button>
             </div>
             <div class="flex items-center gap-1">
               <img src="/profil/statut.png" alt="Statut" class="w-10 h-10" />
@@ -80,16 +73,14 @@
           <div>
             <div class="flex items-center gap-2 mb-0.5">
               <label class="text-xs font-bold font-sigokae">Souillure</label>
-              <input
-                v-model.number="personnageData.souillure"
-                type="number"
-                step="0.1"
-                min="0"
-                max="10"
-                @blur="$emit('save')"
-                class="text-center font-bold text-xs font-montserrat"
-                :style="{ borderColor: '#470602', color: '#470602' }"
-              />
+              <button
+                @mouseenter="showTooltip('souillure'); updateTooltipPosition($event)"
+                @mouseleave="hideTooltip"
+                class="w-4 h-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center text-xs font-bold"
+                title="Historique des changements de souillure"
+              >
+                ?
+              </button>
             </div>
             <div class="flex items-center gap-1">
               <img src="/profil/souillure.png" alt="Souillure" class="w-10 h-10" />
@@ -104,10 +95,9 @@
     </div>
 
     <!-- Initiative & XP -->
-    <div class="rounded-xl px-4 pt-2 relative overflow-hidden">
-      <div class="absolute inset-0" style="background-image: url('/square_2.png'); background-size: 100% 100%;"></div>
-      <div class="relative z-10 px-12 py-4 space-y-3">
-        <div>
+    <div class="relative px-2 pt-1 border-4 border-amber-800 bg-amber-50/30 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+      <div class="relative z-10 px-6 py-2 space-y-3">
+        <div class="flex flex-row gap-2">
           <label class="text-xs font-bold text-center block mb-1 font-katana">INITIATIVE</label>
           <input
             v-model.number="personnageData.initiative"
@@ -119,13 +109,22 @@
         <div>
           <div class="grid grid-cols-3 gap-2">
             <div>
-              <label class="text-xs text-center block mb-1 font-montserrat">XP Total</label>
+              <div class="flex items-center justify-center gap-1 mb-1">
+                <label class="text-xs text-center block font-montserrat">XP Total</label>
+                <button
+                  @mouseenter="showTooltip('xp'); updateTooltipPosition($event)"
+                  @mouseleave="hideTooltip"
+                  class="w-4 h-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center text-xs font-bold"
+                  title="Historique des changements d'XP"
+                >
+                  ?
+                </button>
+              </div>
               <input
-                v-model.number="personnageData.experience_points"
+                :value="personnageData.experience_points"
                 type="number"
-                :min="minimumExperiencePoints"
-                @blur="if (personnageData.experience_points < minimumExperiencePoints) personnageData.experience_points = minimumExperiencePoints; $emit('save')"
-                class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
+                readonly
+                class="w-full border-2 border-stone-400 rounded px-2 py-0.5 text-center font-bold text-xs bg-stone-100 font-montserrat cursor-not-allowed"
               />
             </div>
             <div>
@@ -182,10 +181,34 @@
       </div>
     </div>
   </div>
+
+  <!-- Tooltip d'historique -->
+  <div
+    v-if="tooltipVisible"
+    class="fixed z-50 bg-stone-50 text-white rounded-lg p-3 shadow-xl border border-red-900 max-w-xs pointer-events-none font-montserrat"
+    :style="{ left: tooltipPosition.x + 'px', top: tooltipPosition.y + 'px' }"
+  >
+    <div class="space-y-1 max-h-64 overflow-y-auto">
+      <div
+        v-for="(item, index) in tooltipContent"
+        :key="item.titre + item.date"
+        :class="[
+          'text-xs flex flex-row gap-3 items-center justify-between py-1 px-2 rounded',
+          index < tooltipContent.length - 1 ? 'border-b border-stone-300' : ''
+        ]"
+      >
+        <div class="font-semibold text-red-900 truncate flex-1">{{ item.titre }}</div>
+        <div :class="item.valeur > 0 ? 'text-green-700' : 'text-red-800'">{{ item.valeur > 0 ? '+' : '' }}{{ item.valeur }}</div>
+        <div class="text-xs text-stone-400">{{ item.date }}</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-defineProps({
+import { ref } from 'vue'
+
+const props = defineProps({
   personnageData: {
     type: Object,
     required: true
@@ -209,8 +232,60 @@ defineProps({
   rangReputation: {
     type: Number,
     required: true
+  },
+  historiqueChangements: {
+    type: Array,
+    default: () => []
   }
 })
 
 defineEmits(['save', 'open-xp-modal'])
+
+const tooltipVisible = ref(false)
+const tooltipContent = ref([])
+const tooltipPosition = ref({ x: 0, y: 0 })
+
+const showTooltip = (statType) => {
+  const changements = props.historiqueChangements.filter(entry => {
+    switch (statType) {
+      case 'honneur':
+        return entry.honneur_change !== 0
+      case 'gloire':
+        return entry.gloire_change !== 0
+      case 'statut':
+        return entry.statut_change !== 0
+      case 'souillure':
+        return entry.souillure_change !== 0
+      case 'xp':
+        return entry.xp_change !== 0
+      default:
+        return false
+    }
+  }).slice(0, 10) // Limiter à 10 entrées les plus récentes
+
+  if (changements.length > 0) {
+    tooltipContent.value = changements.map(entry => ({
+      titre: entry.titre,
+      date: new Date(entry.created_at).toLocaleDateString('fr-FR'),
+      valeur: statType === 'xp' ? entry.xp_change :
+              statType === 'honneur' ? entry.honneur_change :
+              statType === 'gloire' ? entry.gloire_change :
+              statType === 'statut' ? entry.statut_change :
+              entry.souillure_change
+    }))
+    tooltipVisible.value = true
+  }
+}
+
+const hideTooltip = () => {
+  tooltipVisible.value = false
+  tooltipContent.value = []
+}
+
+const updateTooltipPosition = (event) => {
+  tooltipPosition.value = {
+    x: event.clientX + 10,
+    y: event.clientY + 10
+  }
+}
 </script>

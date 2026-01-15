@@ -1,8 +1,6 @@
 <template>
-  <div class="rounded-xl p-3 relative overflow-hidden px-12 py-12 pl-24">
-    <div class="absolute inset-0" style="background-image: url('/parchemin_side.png'); background-size: 100% 100%;"></div>
-    <div class="relative z-10">
-      <div class="flex justify-between items-center mb-4">
+  <div class="relative p-2 border-4 border-amber-800 bg-amber-50/30 px-6 py-6 pl-12 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
+    <div class="relative z-10 flex justify-between items-center mb-4">
         <div class="flex gap-2">
           <button
             @click="modeEditionAvantages = !modeEditionAvantages"
@@ -20,10 +18,10 @@
           </button>
         </div>
       </div>
-      <div class="space-y-2 max-h-160 overflow-y-auto pr-2">
+      <div class="space-y-2 max-h-160 overflow-y-auto pr-1">
         <!-- Mode édition -->
         <template v-if="modeEditionAvantages">
-          <div v-for="avantage in avantages" :key="avantage.id" class="border-b border-amber-800/30 pb-2 bg-white/40 px-2 py-2 rounded">
+          <div v-for="avantage in avantages" :key="avantage.id" class="border-b border-amber-800/30 pb-2 bg-white/40 px-1 py-1 rounded">
             <div class="flex items-center gap-2">
               <input
                 v-model="avantage.nom"
@@ -85,7 +83,6 @@
           Aucun avantage/désavantage
         </div>
       </div>
-    </div>
   </div>
 </template>
 
