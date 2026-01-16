@@ -48,36 +48,50 @@
           @delete-skill="supprimerCompetence"
         />
 
-        <!-- Modale Description Compétence -->
-        <div v-if="modaleDescription.visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="fermerModaleDescription">
-          <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 shadow-2xl border-2 border-amber-800/60">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold text-red-900 font-sakurata">{{ modaleDescription.competence?.nom || 'Description' }}</h3>
-              <button 
-                @click="fermerModaleDescription"
-                class="text-red-600 hover:text-red-800 font-bold text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            <textarea 
-              v-model="modaleDescription.description"
-              class="w-full h-64 border-2 border-stone-300 rounded-lg p-4 font-montserrat text-sm"
-              placeholder="Entrez la description complète de la compétence ici..."
-            ></textarea>
-            <div class="flex justify-end gap-2 mt-4">
-              <button 
-                @click="fermerModaleDescription"
-                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold font-katana"
-              >
-                Annuler
-              </button>
-              <button 
-                @click="sauvegarderDescription"
-                class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-bold font-katana"
-              >
-                Sauvegarder
-              </button>
+        <!-- Drawer Description Compétence -->
+        <div v-if="modaleDescription.visible" class="fixed inset-0 z-50 flex">
+          <!-- Overlay -->
+          <div @click="fermerModaleDescription" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+
+          <!-- Drawer panel -->
+          <div class="relative ml-auto w-[60vw] h-full border-l-4 border-amber-800 bg-amber-50/70">
+            <div class="relative z-10 p-4 h-full flex flex-col pl-8">
+              <!-- Header -->
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-red-900 font-sakurata">
+                  {{ modaleDescription.competence?.nom || 'Description' }}
+                </h2>
+                <button
+                  @click="fermerModaleDescription"
+                  class="text-red-600 hover:text-red-800 font-bold text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <!-- Content - WYSIWYG Editor -->
+              <div class="flex-1 overflow-y-auto">
+                <RichTextEditor
+                  v-model="modaleDescription.description"
+                  placeholder="Entrez la description complète de la compétence ici..."
+                />
+              </div>
+
+              <!-- Footer buttons -->
+              <div class="flex justify-end gap-2 mt-4 pt-4 border-t border-amber-800/30">
+                <button
+                  @click="fermerModaleDescription"
+                  class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold font-katana"
+                >
+                  Annuler
+                </button>
+                <button
+                  @click="sauvegarderDescription"
+                  class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-bold font-katana"
+                >
+                  Sauvegarder
+                </button>
+              </div>
             </div>
           </div>
         </div>

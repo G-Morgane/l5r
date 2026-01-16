@@ -10,16 +10,18 @@ CREATE TABLE IF NOT EXISTS pense_bete_notes (
   color VARCHAR(20) DEFAULT 'amber',
   width INTEGER DEFAULT 300,
   height INTEGER DEFAULT 200,
-  order_index INTEGER DEFAULT 0,
+  position_x INTEGER DEFAULT 20,
+  position_y INTEGER DEFAULT 20,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Migration: Ajouter les colonnes position_x et position_y si elles n'existent pas
+ALTER TABLE pense_bete_notes ADD COLUMN IF NOT EXISTS position_x INTEGER DEFAULT 20;
+ALTER TABLE pense_bete_notes ADD COLUMN IF NOT EXISTS position_y INTEGER DEFAULT 20;
+
 -- Index pour les requêtes par personnage
 CREATE INDEX IF NOT EXISTS idx_pense_bete_personnage ON pense_bete_notes(personnage_id);
-
--- Index pour l'ordre
-CREATE INDEX IF NOT EXISTS idx_pense_bete_order ON pense_bete_notes(personnage_id, order_index);
 
 -- Trigger pour mettre à jour updated_at automatiquement
 CREATE OR REPLACE FUNCTION update_pense_bete_updated_at()
