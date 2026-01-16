@@ -22,7 +22,7 @@
           <div class="flex items-center gap-4">
             <div class="flex gap-4">
               <div
-                v-for="cercle in ['Eau', 'Feu', 'Terre', 'Air', 'Vide']"
+                v-for="cercle in ['Eau', 'Feu', 'Terre', 'Air', 'Vide', 'Universel']"
                 :key="cercle"
                 @click="selectionnerCercle(cercle)"
                 class="cursor-pointer transition-all duration-300 rounded-lg overflow-hidden"
@@ -81,6 +81,19 @@
                     Rang {{ sort.rang }}
                   </span>
                 </div>
+                                <!-- Encart Jet d'incantation -->
+                <div class="mb-3 p-3 bg-purple-200/50">
+                  <div class="flex justify-between items-center text-xs font-montserrat">
+                    <div>
+                      <span class="font-semibold text-stone-800">🎲</span>
+                      <span class="text-stone-900 ml-1">{{ calculerJetIncantation(sort) }}</span>
+                    </div>
+                    <div>
+                      <span class="font-semibold text-stone-800">🎯</span>
+                      <span class="text-stone-900 ml-1">{{ calculerND(sort) }}</span>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="space-y-3 text-xs text-stone-700 font-montserrat">
                     <div class="flex flex-row gap-12">
@@ -103,7 +116,12 @@
                     <span class="w-full text-stone-900 font-montserrat text-xs">{{ sort.degats_soin }}</span>
                   </div>
                   <div v-if="sort.effet_augmentation" class="flex flex-col">
-                    <span class="font-semibold text-stone-800">Augmentation:</span>
+                    <span class="font-semibold text-stone-800 flex items-center gap-2">
+                      Augmentation:
+                      <span v-if="personnageActif.nom === 'Shiba Shizuku' && sort.cercle.toLowerCase() === 'eau'" class="text-xs text-green-700 font-bold px-2 py-1 ">
+                        +2 gratuites
+                      </span>
+                    </span>
                     <span class="w-full text-stone-900 font-montserrat text-xs">{{ sort.effet_augmentation }}</span>
                   </div>
                 </div>
@@ -111,6 +129,7 @@
                 <div v-if="sort.description" class="mt-4 text-stone-600 text-xs line-clamp-2 font-montserrat">
                   {{ sort.description }}
                 </div>
+
 
                 <!-- Tags -->
                 <div v-if="sort.mot_cle && sort.mot_cle.length > 0" class="mt-4">
@@ -212,10 +231,40 @@
                     <input v-else v-model="sortSelectionne.degats_soin" class="w-full text-stone-900 font-montserrat text-xs">
                   </div>
                 </div>
+
+                <!-- Encart Jet d'incantation -->
+                <div class="mt-6 p-4 bg-amber-100/50 border border-amber-800/30 rounded-lg">
+                  <div class="mb-3">
+                    <div class="text-xs font-semibold text-stone-600 font-montserrat uppercase tracking-wide mb-2">🎲 Jet d'incantation</div>
+                    <div v-if="sortSelectionne.cercle.toLowerCase() === 'universel'" class="space-y-1">
+                      <div v-for="jet in calculerJetIncantation(sortSelectionne).split(' | ')" :key="jet" class="text-stone-900 font-montserrat text-sm">
+                        {{ jet }}
+                      </div>
+                    </div>
+                    <div v-else class="text-stone-900 font-montserrat text-lg font-bold">
+                      {{ calculerJetIncantation(sortSelectionne) }}
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="text-xs font-semibold text-stone-600 font-montserrat uppercase tracking-wide mb-1">🎯 Niveau de difficulté</div>
+                    <div class="text-stone-900 font-montserrat text-lg font-bold">{{ calculerND(sortSelectionne) }}</div>
+                  </div>
+                  <div class="text-xs text-stone-700 font-montserrat">
+                    <p v-if="sortSelectionne.cercle.toLowerCase() === 'universel'">
+                      <strong>Sort universel :</strong> Choisissez le cercle à utiliser pour lancer le sort
+                    </p>
+                    <p v-else><strong>Calcul du jet :</strong> Anneau d'élément + Rang de maîtrise effectif</p>
+                    <p><strong>ND :</strong> 5 × Rang du sort</p>
+                    <p v-if="personnageActif.nom === 'Shiba Shizuku' && sortSelectionne.cercle.toLowerCase() === 'eau'"><em>✨ Affinité Eau (+1 rang)</em></p>
+                  </div>
+                </div>
               </div>
               <div v-if="sortSelectionne.effet_augmentation">
                 <h3 class="text-sm font-bold text-stone-800 font-montserrat mb-4 flex items-center gap-2">
                   ⚡ Effet d'augmentation
+                  <span v-if="personnageActif.nom === 'Shiba Shizuku' && sortSelectionne.cercle.toLowerCase() === 'eau'" class="text-xs text-green-700 font-bold bg-green-100 px-2 py-1 rounded ml-2">
+                    +2 gratuites
+                  </span>
                   <div class="flex-1 h-px bg-amber-800/30 ml-4"></div>
                 </h3>
 
@@ -383,6 +432,7 @@ const afficherMesSorts = ref(false)
 const modeEdition = ref(false)
 const sauvegardeSort = ref(null)
 const nouveauTag = ref('')
+const avantages = ref([])
 
 // Mapping des tags avec leurs couleurs et noms formatés
 const tagMapping = {
@@ -403,6 +453,75 @@ const tagMapping = {
   'social': { name: 'Social', color: '#E7A7D3' }
 }
 
+// Fonctions de calcul du jet d'incantation
+const calculerJetIncantation = (sort) => {
+  if (!personnageActif.value) return null
+
+  const element = sort.cercle.toLowerCase()
+
+  if (element === 'universel') {
+    // Pour les sorts universels, calculer pour chaque élément
+    const elements = ['feu', 'eau', 'terre', 'air']
+    const jets = elements.map(el => {
+      const anneau = personnageActif.value[el]
+      let rangMaitrise = personnageActif.value.rang
+
+      // Affinités et déficiences depuis les avantages
+      const affinite = avantages.value.find(av => av.type === 'avantage' && av.nom.toLowerCase().includes('affinité') && av.nom.toLowerCase().includes(el))
+      const deficience = avantages.value.find(av => av.type === 'désavantage' && av.nom.toLowerCase().includes('défici') && av.nom.toLowerCase().includes(el))
+
+      if (affinite) {
+        rangMaitrise += 1
+      }
+      if (deficience) {
+        rangMaitrise -= 1
+      }
+
+      // Affinité spéciale pour Shizuku avec l'eau
+      if (personnageActif.value.nom === 'Shiba Shizuku' && el === 'eau') {
+        rangMaitrise += 1
+      }
+
+      if (rangMaitrise <= 0) return `${el.charAt(0).toUpperCase() + el.slice(1)}: Impossible`
+
+      const jet = anneau + rangMaitrise
+      return `${el.charAt(0).toUpperCase() + el.slice(1)}: ${jet}g${anneau}`
+    })
+    return jets.join(' | ')
+  }
+
+  const anneau = personnageActif.value[element] // terre, eau, feu, air, vide
+
+  // Rang de maîtrise : pour l'instant, on utilise le rang du personnage
+  // TODO: ajouter un champ pour rang de maîtrise par élément
+  let rangMaitrise = personnageActif.value.rang
+
+  // Affinités et déficiences depuis les avantages
+  const affinite = avantages.value.find(av => av.type === 'avantage' && av.nom.toLowerCase().includes('affinité') && av.nom.toLowerCase().includes(element))
+  const deficience = avantages.value.find(av => av.type === 'désavantage' && av.nom.toLowerCase().includes('défici') && av.nom.toLowerCase().includes(element))
+
+  if (affinite) {
+    rangMaitrise += 1
+  }
+  if (deficience) {
+    rangMaitrise -= 1
+  }
+
+  // Affinité spéciale pour Shizuku avec l'eau
+  if (personnageActif.value.nom === 'Shiba Shizuku' && element === 'eau') {
+    rangMaitrise += 1
+  }
+
+  if (rangMaitrise <= 0) return 'Impossible'
+
+  const jet = anneau + rangMaitrise
+  return `${jet}g${anneau}`
+}
+
+const calculerND = (sort) => {
+  return 5 * sort.rang
+}
+
 // Rediriger si pas de personnage actif
 onMounted(() => {
   if (!personnageActif.value) {
@@ -410,6 +529,7 @@ onMounted(() => {
   } else {
     chargerSorts()
     chargerSortsAppris()
+    chargerAvantages()
   }
 })
 
@@ -435,6 +555,19 @@ const chargerSortsAppris = async () => {
 
   if (!error && data) {
     sortsAppris.value = data.map(item => item.spell_id)
+  }
+}
+
+const chargerAvantages = async () => {
+  if (!personnageActif.value?.id) return
+
+  const { data, error } = await client
+    .from('avantages')
+    .select('*')
+    .eq('personnage_id', personnageActif.value.id)
+
+  if (!error && data) {
+    avantages.value = data
   }
 }
 
