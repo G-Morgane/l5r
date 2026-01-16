@@ -47,7 +47,8 @@ const iconSrc = computed(() => {
     '/sorts': '/sorts_icone.png',
     '/carte': '/carte_icone.png',
     '/intrigues': '/intrigue_icone.png',
-    '/histoire': '/journal_icon.png' // Utilise journal_icon.png pour histoire en attendant
+    '/histoire': '/journal_icon.png', // Utilise journal_icon.png pour histoire en attendant
+  '/pense_bete' : '/pense_bete.png'
   }
   return iconMap[props.link] || '/journal_icon.png'
 })

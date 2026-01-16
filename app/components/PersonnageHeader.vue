@@ -82,6 +82,12 @@
           title="Intrigues"
           description="Enquêtes en cours"
         />
+         <NavigationCard
+          link="/pense_bete"
+          emoji="📝"
+          title="Pense bête"
+          description="Notes rapides et rappels"
+        />
       </div>
     </div>
   </div>

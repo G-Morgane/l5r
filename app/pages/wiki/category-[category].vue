@@ -1,18 +1,13 @@
 <template>
-  <div class="relative overflow-hidden min-h-screen">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0" style="background-image: url('/fond_long.png'), url('/bas_fond.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
+  <PageWrapper :loading="loading" loading-message="Chargement de la catégorie...">
+    <template #header>
+      <PersonnageHeader
+        :personnage="personnageActif"
+        @deselect="changeCharacter()"
+      />
+    </template>
 
-    <div class="container mx-auto px-4 py-8 relative z-10">
-      <!-- En-tête personnage -->
-      <PersonnageHeader 
-          :personnage="personnageActif"
-          @deselect="changeCharacter()"
-        />
-
-      <div class="flex flex-col">
+    <div class="flex flex-col">
 
         <!-- En-tête avec bouton retour -->
         <div class="mb-8 flex gap-4 items-center px-12">
@@ -127,9 +122,8 @@
           </div>
         </div>
 
-      </div>
     </div>
-  </div>
+  </PageWrapper>
 </template>
 
 <script setup>
@@ -138,6 +132,7 @@ const personnageActif = usePersonnageActif()
 const router = useRouter()
 const route = useRoute()
 
+const loading = ref(true)
 const items = ref([])
 const afficherFormulaire = ref(false)
 const searchQuery = ref('')
@@ -159,12 +154,17 @@ const categoryName = computed(() => categoryConfig[category.value]?.name || 'Cat
 const categoryEmoji = computed(() => categoryConfig[category.value]?.emoji || '📑')
 
 // Rediriger si pas de personnage actif
-onMounted(() => {
+onMounted(async () => {
   if (!personnageActif.value) {
+    loading.value = false
     navigateTo('/')
   } else {
-    nouvelItem.value.categorie = category.value
-    chargerItems()
+    try {
+      nouvelItem.value.categorie = category.value
+      await chargerItems()
+    } finally {
+      loading.value = false
+    }
   }
 })
 

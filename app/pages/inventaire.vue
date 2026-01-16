@@ -1,34 +1,25 @@
 <template>
-  <div v-if="!personnageActif" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-stone-100">
-    <div class="text-center">
-      <Icon name="heroicons:user-circle" class="w-16 h-16 text-stone-400 mx-auto mb-4" />
-      <h2 class="text-2xl font-bold text-stone-600 mb-2">Aucun personnage sélectionné</h2>
-      <p class="text-stone-500 mb-6">Veuillez sélectionner un personnage pour accéder à votre inventaire.</p>
-      <NuxtLink to="/" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors">
-        Retour à l'accueil
-      </NuxtLink>
-    </div>
-  </div>
-
-  <div v-else class="min-h-screen relative overflow-hidden">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0">
-      <img
-        src="/fond_long.png"
-        alt="Japanese room background"
-        class="w-full h-auto"
-      />
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
-
-    <div class="container mx-auto px-4 py-8 relative z-10">
-      <!-- PersonnageHeader -->
+  <PageWrapper :loading="loading" loading-message="Chargement de l'inventaire...">
+    <template #header>
+      <div v-if="!personnageActif" class="flex items-center justify-center py-12">
+        <div class="text-center">
+          <Icon name="heroicons:user-circle" class="w-16 h-16 text-stone-400 mx-auto mb-4" />
+          <h2 class="text-2xl font-bold text-stone-600 mb-2">Aucun personnage sélectionné</h2>
+          <p class="text-stone-500 mb-6">Veuillez sélectionner un personnage pour accéder à votre inventaire.</p>
+          <NuxtLink to="/" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors">
+            Retour à l'accueil
+          </NuxtLink>
+        </div>
+      </div>
       <PersonnageHeader
+        v-else
         :personnage="personnageActif || {}"
         @deselect="changeCharacter()"
         class="mb-6"
       />
+    </template>
 
+    <div v-if="personnageActif">
       <!-- Contenu principal -->
       <div class="max-h-[80vh] relative overflow-y-auto">
         <div class="relative z-10 p-6 px-24">
@@ -166,12 +157,13 @@ Ajouter
       </div>
 
       <!-- Liste des objets -->
-      <div class="flex flex-row flex-wrap gap-4">
+      <div class="flex flex-row flex-wrap gap-8 justify-between">
         <div
           v-for="item in filteredItems"
           :key="item.id"
-          class="rounded-lg overflow-hidden"
-          style="width: 170px; height: 170px; background-image: url('/square.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"
+          class="overflow-hidden"
+          :class="item.is_equipped ? 'ring-4 ring-green-200' : ''"
+          style="width: 220px; height: 120px; background-image: url('/square.png'); background-size: 100% 100%;"
         >
           <!-- Ligne principale -->
           <div
@@ -179,10 +171,7 @@ Ajouter
             class="p-4 cursor-pointer transition-all hover:scale-105 flex flex-col items-center justify-center h-full"
           >
             <div class="flex items-center gap-2 mb-2">
-              <h3 class="text-lg font-semibold text-black font-montserrat">{{ item.name }}</h3>
-              <Icon :name="item.is_equipped ? 'heroicons:check-circle' : 'heroicons:minus-circle'"
-                    :class="item.is_equipped ? 'text-green-600' : 'text-gray-600'"
-                    class="w-5 h-5" />
+              <h3 class="text-sm font-semibold text-black font-montserrat">{{ item.name }}</h3>
             </div>
             <div class="flex items-center gap-2 mb-2">
               <span
@@ -495,6 +484,8 @@ Ajouter
           </div>
         </div>
       </div>
+        </div>
+      </div>
 
       <!-- Message si aucun objet -->
       <div v-if="filteredItems.length === 0" class="text-center py-12">
@@ -507,12 +498,7 @@ Ajouter
         </p>
       </div>
     </div>
-    </div>
-    </div>
-
-    <!-- Modal d'ajout/modification d'objet -->
-    <!-- ItemModal supprimé - maintenant intégré dans le drawer -->
-  </div>
+  </PageWrapper>
 </template>
 
 <script setup lang="ts">
@@ -520,6 +506,8 @@ import { ref, computed, onMounted } from 'vue'
 
 const supabase = useSupabaseClient()
 const personnageActif = usePersonnageActif()
+
+const loading = ref(true)
 
 // Types locaux
 interface InventoryItem {
@@ -1020,7 +1008,10 @@ const changeCharacter = () => {
 
 // Lifecycle
 onMounted(async () => {
-  await loadTags()
-  await loadItems()
+  try {
+    await Promise.all([loadTags(), loadItems()])
+  } finally {
+    loading.value = false
+  }
 })
 </script>

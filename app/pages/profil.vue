@@ -1,37 +1,17 @@
 <template>
-  <div class="min-h-screen relative overflow-hidden">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0">
-      <!-- Partie supérieure -->
-      <div class="absolute top-0 left-0 right-0 h-1/2 overflow-hidden">
-        <img
-          src="/fond_long.png"
-          alt="Japanese room background top"
-          class="w-full h-full object-cover object-top"
-        />
-      </div>
-      <!-- Partie inférieure -->
-      <div class="absolute bottom-0 left-0 right-0 h-1/2 overflow-hidden">
-        <img
-          src="/fond_long.png"
-          alt="Japanese room background bottom"
-          class="w-full h-full object-cover object-bottom scale-x-[-1]"
-        />
-      </div>
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
-    
-    <div class="container mx-auto px-4 py-4 relative z-10">
-      <!-- En-tête -->
+  <PageWrapper :loading="loading" loading-message="Chargement du profil...">
+    <template #header>
       <div v-if="!personnageActif">
         <ProfilNoCharacter />
       </div>
-      <div v-else class="max-w-7xl mx-auto">
-        <!-- En-tête personnage -->
-        <PersonnageHeader 
-          :personnage="personnageActif"
-          @deselect="() => navigateTo('/')"
-        />
+      <PersonnageHeader
+        v-else
+        :personnage="personnageActif"
+        @deselect="() => navigateTo('/')"
+      />
+    </template>
+
+    <div v-if="personnageActif">
         <!-- Section principale : Anneaux + Stats -->
         <div class="space-y-3 mb-3 mx-24">
           <!-- Ligne 1 : Tous les cercles -->
@@ -170,17 +150,14 @@
           <div class="flex flex-col gap-4">
            
           <ProfilBlessures
-
+            :personnage-data="personnageData"
 
           />
           </div>
         </div>
-        
-      </div>
     </div>
-  </div>
 
-  <!-- Modale Table de Référence des ND -->
+    <!-- Modale Table de Référence des ND -->
   <div v-if="modaleTableND" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="modaleTableND = false">
     <div class="bg-white rounded-xl p-6 max-w-3xl w-full mx-4 shadow-2xl border-2 border-amber-800/60">
       <div class="flex justify-between items-center mb-4">
@@ -274,11 +251,14 @@
       </div>
     </div>
   </div>
+  </PageWrapper>
 </template>
 
 <script setup>
 const client = useSupabaseClient()
 const personnageActif = usePersonnageActif()
+
+const loading = ref(true)
 
 // Données du personnage
 const personnageData = ref({
@@ -488,10 +468,10 @@ const experienceDepenseAuto = computed(() => {
     const rang = avantage.rang || 0
     if (avantage.type === 'avantage') {
       total += rang  // Les avantages coûtent des points
-    } else if (avantage.type === 'desavantage') {
-      total -= rang  // Les désavantages donnent des points
-    }
+    } 
   })
+
+  total -= 6
   
   return total
 })
@@ -537,9 +517,13 @@ const minimumExperiencePoints = computed(() => {
 
 // Charger les données
 onMounted(async () => {
-  if (!personnageActif.value) return
+  if (!personnageActif.value) {
+    loading.value = false
+    return
+  }
 
-  // Charger le personnage
+  try {
+    // Charger le personnage
   const { data: perso } = await client
     .from('personnages')
     .select('*')
@@ -617,6 +601,9 @@ onMounted(async () => {
 
   // Charger l'historique des changements
   await chargerHistoriqueChangements()
+  } finally {
+    loading.value = false
+  }
 })
 
 // Calculer automatiquement les anneaux en fonction des traits

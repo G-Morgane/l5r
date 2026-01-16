@@ -1,18 +1,13 @@
 <template>
-  <div class="relative overflow-hidden">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0" style="background-image: url('/fond_long.png'), url('/bas_fond.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
+  <PageWrapper :loading="loading" loading-message="Chargement de la carte...">
+    <template #header>
+      <PersonnageHeader
+        :personnage="personnageActif || {}"
+        @deselect="changeCharacter()"
+      />
+    </template>
 
-    <div class="container mx-auto px-4 py-8 relative z-10">
-      <!-- En-tête personnage -->
-      <PersonnageHeader 
-          :personnage="personnageActif || {}"
-          @deselect="changeCharacter()"
-        />
-
-      <div class="flex flex-col">
+    <div class="flex flex-col">
         <!-- Contenu existant -->
         <MapCanvas
           v-if="map"
@@ -72,14 +67,14 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+  </PageWrapper>
 </template>
 <script setup lang="ts">
 import type { MapRow, MapLocationRow } from '~/utils/types'
 const supabase = useSupabaseClient()
 const personnageActif = usePersonnageActif()
 
+const loading = ref(true)
 const map = ref<MapRow | null>(null)
 const availableMaps = ref<MapRow[]>([])
 const selectedMapId = ref<string>('')
@@ -236,8 +231,12 @@ async function createNewMap() {
 }
 
 onMounted(async () => {
-  await loadAvailableMaps()
-  await loadAllLocations()
+  try {
+    await loadAvailableMaps()
+    await loadAllLocations()
+  } finally {
+    loading.value = false
+  }
 })
 
 function handleCellClick({ col, row }: { col: number; row: number }) {

@@ -1,19 +1,15 @@
 <template>
-  <div class="min-h-screen relative overflow-hidden">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0">
-      <img 
-        src="/background.png" 
-        alt="Japanese room background" 
+  <PageWrapper :loading="loading" loading-message="Chargement des personnages..." :custom-background="true">
+    <template #background>
+      <img
+        src="/background.png"
+        alt="Japanese room background"
         class="w-full h-full object-cover"
       />
-      <!-- Overlay léger pour assurer la lisibilité -->
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
+    </template>
 
-    <div class="container mx-auto px-4 py-8 md:py-12 relative z-10">
-      <!-- Sélection de personnage -->
-      <div v-if="!personnageActif" class="max-w-7xl mx-auto">
+    <!-- Sélection de personnage -->
+    <div v-if="!personnageActif">
         <!-- Aucun personnage -->
         <div v-if="personnages.length === 0" class="text-center max-w-xl mx-auto">
           <div class="rounded-lg p-12 shadow-2xl relative" style="background-image: url('/cadre.png'); background-size: cover; background-position: center;">
@@ -73,18 +69,15 @@
         />
       </div>
 
-      <!-- Menu principal avec personnage actif -->
-      <div v-else class="max-w-6xl mx-auto" style="margin-top: 30vh;">
-        <!-- En-tête personnage style parchemin -->
-        <PersonnageHeader 
-        
-          :personnage="personnageActif"
-          @deselect="() => navigateTo('/')"
-        />
-
-      </div>
+    <!-- Menu principal avec personnage actif -->
+    <div v-else style="margin-top: 30vh;">
+      <!-- En-tête personnage style parchemin -->
+      <PersonnageHeader
+        :personnage="personnageActif"
+        @deselect="() => navigateTo('/')"
+      />
     </div>
-  </div>
+  </PageWrapper>
 </template>
 
 <script setup>
@@ -93,6 +86,7 @@ const personnageActif = usePersonnageActif()
 
 const personnages = ref([])
 const afficherFormulaire = ref(false)
+const loading = ref(true)
 const nouveauPerso = ref({
   nom: '',
   clan: '',
@@ -126,12 +120,17 @@ watch(() => nouveauPerso.value.clan, () => {
 
 // Charger les personnages
 const chargerPersonnages = async () => {
-  const { data } = await client
-    .from('personnages')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  personnages.value = data || []
+  loading.value = true
+  try {
+    const { data } = await client
+      .from('personnages')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    personnages.value = data || []
+  } finally {
+    loading.value = false
+  }
 }
 
 const selectionnerPersonnage = (perso) => {
@@ -157,10 +156,3 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.maxW500 {
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>

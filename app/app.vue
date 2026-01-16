@@ -2,6 +2,14 @@
   <NuxtPage />
 </template>
 
+<script setup>
+// Configuration des transitions de page
+const pageTransition = {
+  name: 'page',
+  mode: 'out-in'
+}
+</script>
+
 <style>
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
@@ -91,5 +99,16 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Page Transitions - Fade */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
 }
 </style>

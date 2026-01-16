@@ -1,20 +1,11 @@
 <template>
-  <div class="min-h-screen relative overflow-hidden">
-    <!-- Fond image japonaise -->
-    <div class="absolute inset-0">
-      <!-- Partie supérieure -->
-  <div class="absolute inset-0" style="background-image: url('/fond_long.png'), url('/bas_fond.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
-
-    <div class="container mx-auto px-4 py-8 relative z-10">
-      <!-- En-tête personnage -->
+  <PageWrapper :loading="loading" loading-message="Chargement des sorts...">
+    <template #header>
       <PersonnageHeader
-          :personnage="personnageActif"
-          @deselect="changeCharacter()"
-        />
+        :personnage="personnageActif"
+        @deselect="changeCharacter()"
+      />
+    </template>
 
       <div class="flex flex-col mt-12">
         <!-- Barre de navigation des cercles -->
@@ -145,7 +136,6 @@
                   </div>
                 </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -412,10 +402,10 @@
               </div>
             </div>
           </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </PageWrapper>
 </template>
 
 <script setup>
@@ -424,6 +414,7 @@ import RichTextEditor from '~/components/RichTextEditor.vue'
 const client = useSupabaseClient()
 const personnageActif = usePersonnageActif()
 
+const loading = ref(true)
 const cercleSelectionne = ref('Eau')
 const sortSelectionne = ref(null)
 const sorts = ref([])
@@ -523,13 +514,20 @@ const calculerND = (sort) => {
 }
 
 // Rediriger si pas de personnage actif
-onMounted(() => {
+onMounted(async () => {
   if (!personnageActif.value) {
+    loading.value = false
     navigateTo('/')
   } else {
-    chargerSorts()
-    chargerSortsAppris()
-    chargerAvantages()
+    try {
+      await Promise.all([
+        chargerSorts(),
+        chargerSortsAppris(),
+        chargerAvantages()
+      ])
+    } finally {
+      loading.value = false
+    }
   }
 })
 

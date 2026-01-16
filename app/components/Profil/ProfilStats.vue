@@ -96,16 +96,7 @@
 
     <!-- Initiative & XP -->
     <div class="relative px-2 pt-1 border-4 border-amber-800 bg-amber-50/30 before:absolute before:inset-0 before:border-2 before:border-amber-900 before:pointer-events-none">
-      <div class="relative z-10 px-6 py-2 space-y-3">
-        <div class="flex flex-row gap-2">
-          <label class="text-xs font-bold text-center block mb-1 font-katana">INITIATIVE</label>
-          <input
-            v-model.number="personnageData.initiative"
-            type="number"
-            @blur="$emit('save')"
-            class="w-full border-2 border-stone-300 rounded px-2 py-0.5 text-center font-bold text-xs bg-white font-montserrat"
-          />
-        </div>
+      <div class="relative z-10 px-6 py-2 space-y-3 flex flex-col h-full py-8 justify-between">
         <div>
           <div class="grid grid-cols-3 gap-2">
             <div>

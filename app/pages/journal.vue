@@ -1,17 +1,11 @@
 <template>
-  <div class="relative overflow-hidden h-screen">
-    <!-- Fond image japonaise -->
-    <div class="h-screen absolute inset-0" style="background-image: url('/fond_long.png'); background-position: top, bottom; background-repeat: no-repeat; background-size: 100% auto, 100% auto;">
-          <div class="absolute inset-0 bg-black/10"></div>
-
-    </div>
-
-    <div class="container mx-auto px-4 py-8 relative z-10">
-      <!-- En-tête personnage -->
-      <PersonnageHeader 
-          :personnage="personnageActif"
-          @deselect="changeCharacter()"
-        />
+  <PageWrapper :loading="loading" loading-message="Chargement du journal...">
+    <template #header>
+      <PersonnageHeader
+        :personnage="personnageActif"
+        @deselect="changeCharacter()"
+      />
+    </template>
 
       <div class="flex flex-col">
 
@@ -503,8 +497,7 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+  </PageWrapper>
 </template>
 
 <script setup>
@@ -512,6 +505,7 @@ const client = useSupabaseClient()
 const personnageActif = usePersonnageActif()
 const route = useRoute()
 
+const loading = ref(true)
 const entries = ref([])
 const afficherFormulaire = ref(false)
 const entreeSelectionnee = ref(null)
@@ -536,13 +530,17 @@ const nouvelleEntree = ref({
 })
 
 // Rediriger si pas de personnage actif
-onMounted(() => {
+onMounted(async () => {
   if (!personnageActif.value) {
+    loading.value = false
     navigateTo('/')
   } else {
-    chargerEntrees()
-    chargerWikiItems()
-    
+    try {
+      await Promise.all([chargerEntrees(), chargerWikiItems()])
+    } finally {
+      loading.value = false
+    }
+
     // Fermer les suggestions au clic en dehors
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.suggestions-container')) {
