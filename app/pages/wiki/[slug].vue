@@ -31,7 +31,7 @@
               <div class="space-y-2 max-h-[95vh] overflow-y-auto">
                 <!-- Description principale -->
                 <div v-if="item.description" class="text-stone-800 font-montserrat text-sm">
-                  <div v-html="formatDescription(item.description)" class="leading-relaxed"></div>
+                  <MarkdownPreview :content="item.description" />
                 </div>
                 
                 <!-- Métadonnées -->
@@ -435,56 +435,6 @@ const sauvegarderTout = async () => {
   modeEditionCategorie.value = false
 }
 
-const formatDescription = (text) => {
-  if (!text) return ''
-  
-  // Fonction helper pour wrapper le contenu avec des classes Tailwind
-  const wrapWithClass = (tag, className) => {
-    return text.replace(new RegExp(`<${tag}(.*?)>(.*?)</${tag}>`, 'gis'), `<${tag}$1 class="${className}">$2</${tag}>`)
-  }
-  
-  let formatted = text
-  
-  // Headings avec des tailles réduites et espacements compacts
-  formatted = formatted.replace(/<h1(.*?)>(.*?)<\/h1>/gis, '<h1$1 class="text-2xl font-bold text-amber-900 font-sakurata mt-2 mb-2 border-b-2 border-amber-800/30 pb-1">$2</h1>')
-  formatted = formatted.replace(/<h2(.*?)>(.*?)<\/h2>/gis, '<h2$1 class="text-xl font-bold text-amber-800 font-sakurata mt-2 mb-1">$2</h2>')
-  formatted = formatted.replace(/<h3(.*?)>(.*?)<\/h3>/gis, '<h3$1 class="text-lg font-bold text-amber-700 font-sakurata mt-2 mb-1">$2</h3>')
-  formatted = formatted.replace(/<h4(.*?)>(.*?)<\/h4>/gis, '<h4$1 class="text-base font-semibold text-amber-600 font-montserrat mt-1 mb-1">$2</h4>')
-  formatted = formatted.replace(/<h5(.*?)>(.*?)<\/h5>/gis, '<h5$1 class="text-sm font-semibold text-stone-700 font-montserrat mt-1 mb-1">$2</h5>')
-  formatted = formatted.replace(/<h6(.*?)>(.*?)<\/h6>/gis, '<h6$1 class="text-xs font-semibold text-stone-600 font-montserrat mt-1 mb-1">$2</h6>')
-  
-  // Citations avec un style spécial et espacement réduit
-  formatted = formatted.replace(/<blockquote(.*?)>(.*?)<\/blockquote>/gis, '<blockquote$1 class="border-l-4 border-amber-600 pl-3 italic text-stone-700 bg-amber-50/50 py-1 my-2 rounded-r-lg">$2</blockquote>')
-  
-  // Listes avec espacement réduit
-  formatted = formatted.replace(/<ul(.*?)>(.*?)<\/ul>/gis, '<ul$1 class="list-disc list-inside space-y-0.5 my-2 ml-4">$2</ul>')
-  formatted = formatted.replace(/<ol(.*?)>(.*?)<\/ol>/gis, '<ol$1 class="list-decimal list-inside space-y-0.5 my-2 ml-4">$2</ol>')
-  formatted = formatted.replace(/<li(.*?)>(.*?)<\/li>/gis, '<li$1 class="text-stone-800">$2</li>')
-  
-  // Texte formaté
-  formatted = formatted.replace(/<strong(.*?)>(.*?)<\/strong>/gis, '<strong$1 class="font-bold text-stone-900">$2</strong>')
-  formatted = formatted.replace(/<b(.*?)>(.*?)<\/b>/gis, '<b$1 class="font-bold text-stone-900">$2</b>')
-  formatted = formatted.replace(/<em(.*?)>(.*?)<\/em>/gis, '<em$1 class="italic text-stone-700">$2</em>')
-  formatted = formatted.replace(/<i(.*?)>(.*?)<\/i>/gis, '<i$1 class="italic text-stone-700">$2</i>')
-  
-  // Liens
-  formatted = formatted.replace(/<a(.*?)>(.*?)<\/a>/gis, '<a$1 class="text-amber-700 hover:text-amber-900 underline transition-colors">$2</a>')
-  
-  // Paragraphes avec espacement très réduit
-  formatted = formatted.replace(/<p(.*?)>(.*?)<\/p>/gis, '<p$1 class="mb-2 leading-snug text-stone-800 text-sm">$2</p>')
-  
-  // Code inline
-  formatted = formatted.replace(/<code(.*?)>(.*?)<\/code>/gis, '<code$1 class="bg-stone-100 text-stone-900 px-1.5 py-0.5 rounded text-sm font-mono">$2</code>')
-  
-  // Blocs de code avec espacement réduit
-  formatted = formatted.replace(/<pre(.*?)>(.*?)<\/pre>/gis, '<pre$1 class="bg-stone-100 text-stone-900 p-3 rounded-lg overflow-x-auto my-2 border-l-4 border-amber-600">$2</pre>')
-  
-  // Lignes horizontales avec espacement réduit
-  formatted = formatted.replace(/<hr(.*?)>/gis, '<hr$1 class="border-amber-800/30 my-3">')
-  
-  return formatted
-}
-
 const handleTagClick = async (tagName) => {
   const existingItem = getWikiItemByName(tagName)
   
@@ -542,3 +492,4 @@ const changeCharacter = () => {
   navigateTo('/')
 }
 </script>
+

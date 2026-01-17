@@ -345,7 +345,7 @@
                 </h3>
 
                 <div v-if="!modeEdition" class="text-stone-800 font-montserrat leading-relaxed text-justify bg-white/50 rounded-lg p-4 text-sm">
-                  <div v-html="sortSelectionne.detailled_description" class="preserve-whitespace"></div>
+                  <MarkdownPreview :content="sortSelectionne.detailled_description" />
                 </div>
                 <div v-else class="w-full">
                   <RichTextEditor
@@ -758,8 +758,4 @@ const changeCharacter = () => {
   transform: scale(1.2);
 }
 
-.preserve-whitespace {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
 </style>

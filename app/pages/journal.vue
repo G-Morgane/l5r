@@ -265,27 +265,36 @@
       </div>
 
       <!-- Drawer détail -->
-      <div v-if="entreeSelectionnee || createMode" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" @click.self="closeDrawer">
-        <div class="absolute right-0 top-[-40px] h-[110vh] w-[60vw] flex flex-col" style="background-image: url('/drawer.png'); background-size: 100% 100%; background-position: center;">
-          <!-- En-tête -->
-          <div class="relative overflow-hidden">
-            <div class="relative px-6 py-4 flex items-center justify-between">
-              <div v-if="drawerMode === 'view'" class="pl-24 pt-24">
-                <h3 class="text-3xl font-bold text-stone-900 font-manga mb-2">{{ entreeSelectionnee.titre }}</h3>
-                <p class="text-sm text-stone-700 font-montserrat mb-2">📅 {{ formatDate(entreeSelectionnee.date_session) }}</p>
+      <div v-if="entreeSelectionnee || createMode" class="fixed inset-0 z-50 flex" @click.self="closeDrawer">
+        <!-- Overlay -->
+        <div @click="closeDrawer" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+
+        <!-- Drawer Panel -->
+        <div class="relative ml-auto w-[60vw] h-full border-l-4 border-amber-800 bg-amber-50/95 backdrop-blur-md">
+          <div class="relative z-10 p-4 h-full flex flex-col pl-8">
+            <!-- Header -->
+            <div class="flex items-start justify-between mb-6 pb-4 border-b-2 border-amber-800/30">
+              <div v-if="drawerMode === 'view'">
+                <h3 class="text-2xl font-bold text-stone-900 font-manga mb-2">{{ entreeSelectionnee.titre }}</h3>
+                <p class="text-sm text-stone-700 font-montserrat">📅 {{ formatDate(entreeSelectionnee.date_session) }}</p>
               </div>
-              <div v-else-if="createMode">
+              <div v-else-if="createMode || entreeEnEdition">
                 <h3 class="text-2xl font-bold text-stone-900 font-manga flex items-center gap-3">
-                  <span class="text-xl">📖</span>
-                  Nouvelle entrée
+                  <span class="text-xl">{{ entreeEnEdition ? '✏️' : '📖' }}</span>
+                  {{ entreeEnEdition ? 'Modifier l\'entrée' : 'Nouvelle entrée' }}
                 </h3>
               </div>
-             
+
+              <button
+                @click="closeDrawer"
+                class="text-stone-600 hover:text-stone-900 font-bold text-2xl"
+              >
+                ×
+              </button>
             </div>
-          </div>
 
           <!-- Contenu -->
-          <div v-if="drawerMode === 'view'" class="overflow-y-auto flex-1 px-24 flex flex-col gap-4">
+          <div v-if="drawerMode === 'view'" class="overflow-y-auto flex-1 flex flex-col gap-4">
             <div v-if="entreeSelectionnee.tags && entreeSelectionnee.tags.length > 0" class="flex flex-wrap gap-2">
                   <NuxtLink
                     v-for="(tag, index) in entreeSelectionnee.tags" 
@@ -337,11 +346,13 @@
               </div>
             </div>
 
-            <div class="prose prose-stone max-w-none text-stone-900 font-montserrat leading-relaxed journal-content text-sm" v-html="formatContent(entreeSelectionnee.contenu)"></div>
+            <div class="prose prose-stone max-w-none text-stone-900 font-montserrat leading-relaxed journal-content text-sm">
+              <MarkdownPreview :content="entreeSelectionnee.contenu" />
+            </div>
           </div>
 
           <!-- Formulaire d'édition -->
-          <div v-else class="overflow-y-auto flex-1 px-24 pt-18">
+          <div v-else class="overflow-y-auto flex-1">
             <form id="edit-form" @submit.prevent="creerEntree" class="space-y-4">
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
@@ -473,27 +484,37 @@
           </div>
 
           <!-- Actions -->
-          <div v-if="drawerMode === 'view'" class="flex w-full gap-2 content-center justify-center pb-12">
-             <img 
-              @click="modifierEntree(entreeSelectionnee)" 
-              :src="'encrier.png'"
-              class="w-16 h-18 object-cover rounded-lg cursor-pointer hover:scale-105"
-            />
-            <img 
-                          @click="supprimerEntree(entreeSelectionnee.id)" 
-              :src="'poubelle.png'"
-              class="w-12 h-18 object-cover rounded-lg cursor-pointer hover:scale-105"
-            />
-          </div>
+          <div class="mt-6 pt-4 border-t-2 border-amber-800/30 flex justify-between items-center">
+            <div v-if="drawerMode === 'view'" class="flex gap-4">
+              <button
+                @click="modifierEntree(entreeSelectionnee)"
+                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-medium transition-colors flex items-center gap-2 font-montserrat rounded-lg"
+              >
+                ✏️ Modifier
+              </button>
+              <button
+                @click="supprimerEntree(entreeSelectionnee.id)"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium transition-colors flex items-center gap-2 font-montserrat rounded-lg"
+              >
+                🗑️ Supprimer
+              </button>
+            </div>
 
-          <!-- Actions édition -->
-          <div v-else class="flex w-full gap-8 content-center justify-center pb-12">
-            <img 
-              @click="creerEntree"
-              :src="'save.png'"
-              class="w-12 h-12 object-cover rounded-lg cursor-pointer hover:scale-105"
-            />
-           
+            <div v-else class="flex gap-4">
+              <button
+                @click="creerEntree"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium transition-colors flex items-center gap-2 font-montserrat rounded-lg"
+              >
+                💾 Sauvegarder
+              </button>
+              <button
+                @click="closeDrawer"
+                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium transition-colors flex items-center gap-2 font-montserrat rounded-lg"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -943,11 +964,6 @@ const getTagEmoji = (tagName) => {
   return '🏷️'
 }
 
-const formatContent = (content) => {
-  if (!content) return ''
-  return content.replace(/\n/g, '<br>')
-}
-
 const getRandomJournalImage = (index) => {
   const images = ['/journal/arbre.png', '/journal/batiment.png', '/journal/drapeau.png', '/journal/oni.png']
   return images[index % images.length]
@@ -962,73 +978,3 @@ const hasStatChanges = (entry) => {
 }
 </script>
 
-<style scoped>
-.journal-content :deep(blockquote) {
-  border-left: 4px solid rgb(180 83 9);
-  padding-left: 1rem;
-  font-style: italic;
-  color: rgb(87 83 78);
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  background: rgb(245 158 11 / 0.05);
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-
-.journal-content :deep(h2) {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: rgb(28 25 23);
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
-  font-family: 'Sakurata', cursive;
-}
-
-.journal-content :deep(h3) {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: rgb(41 37 36);
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  font-family: 'Katana', sans-serif;
-}
-
-.journal-content :deep(ul),
-.journal-content :deep(ol) {
-  padding-left: 1.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.journal-content :deep(ul li) {
-  list-style-type: disc;
-}
-
-.journal-content :deep(ol li) {
-  list-style-type: decimal;
-}
-
-.journal-content :deep(hr) {
-  border-color: rgb(120 53 15 / 0.5);
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.journal-content :deep(p) {
-  margin-bottom: 0.75rem;
-  line-height: 1.625;
-}
-
-.journal-content :deep(strong) {
-  font-weight: bold;
-  color: rgb(28 25 23);
-}
-
-.journal-content :deep(em) {
-  font-style: italic;
-}
-
-.journal-content :deep(u) {
-  text-decoration: underline;
-}
-</style>

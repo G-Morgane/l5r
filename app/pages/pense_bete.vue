@@ -68,12 +68,27 @@
           </div>
 
           <!-- Contenu de la note -->
-          <textarea
-            v-model="note.content"
-            @blur="sauvegarderNote(note)"
-            class="w-full flex-1 p-3 bg-transparent outline-none font-montserrat text-sm resize-none"
-            placeholder="Écrivez ici..."
-          ></textarea>
+          <div class="flex-1 overflow-hidden">
+            <!-- Mode édition -->
+            <textarea
+              v-if="editingNoteId === note.id"
+              v-model="note.content"
+              @blur="finishEditing(note)"
+              @keydown.escape="finishEditing(note)"
+              ref="textareaRef"
+              class="w-full h-full p-3 bg-transparent outline-none font-montserrat text-sm resize-none"
+              placeholder="Écrivez ici en Markdown..."
+            ></textarea>
+            <!-- Mode vue -->
+            <div
+              v-else
+              @click="startEditing(note)"
+              class="w-full h-full p-3 overflow-auto cursor-text"
+            >
+              <MarkdownPreview v-if="note.content" :content="note.content" />
+              <span v-else class="text-stone-400 font-montserrat text-sm italic">Cliquez pour écrire...</span>
+            </div>
+          </div>
 
           <!-- Handle de resize -->
           <div
@@ -122,6 +137,8 @@ const loading = ref(true)
 const notes = ref<Note[]>([])
 const saveTimeout = ref<NodeJS.Timeout | null>(null)
 const canvasRef = ref<HTMLElement | null>(null)
+const editingNoteId = ref<string | null>(null)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
 // Drag state
 const draggingNote = ref<Note | null>(null)
@@ -241,6 +258,21 @@ const supprimerNote = async (id: string) => {
 const changerCouleur = (note: Note, color: string) => {
   note.color = color
   sauvegarderNote(note)
+}
+
+// Édition du contenu
+const startEditing = (note: Note) => {
+  editingNoteId.value = note.id
+  nextTick(() => {
+    if (textareaRef.value) {
+      textareaRef.value.focus()
+    }
+  })
+}
+
+const finishEditing = (note: Note) => {
+  sauvegarderNote(note)
+  editingNoteId.value = null
 }
 
 // Couleurs de bordure
