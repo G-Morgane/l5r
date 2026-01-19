@@ -128,16 +128,24 @@
                   class="bg-white/50 rounded-lg p-4 border border-amber-900/20 group"
                 >
                   <div class="flex items-start justify-between">
-                    <div>
+                    <div class="flex-1">
                       <h3 class="font-bold text-stone-900 font-montserrat">{{ piste.title }}</h3>
                       <p v-if="piste.description" class="text-stone-600 text-sm font-montserrat mt-1">{{ piste.description }}</p>
                     </div>
-                    <button
-                      @click="retirerLien(piste.link_id)"
-                      class="text-red-600 hover:text-red-800 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      x
-                    </button>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        @click="ouvrirModalEditionPiste(piste)"
+                        class="text-amber-700 hover:text-amber-900 text-sm"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        @click="retirerLien(piste.link_id)"
+                        class="text-red-600 hover:text-red-800"
+                      >
+                        x
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -356,6 +364,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal edition piste -->
+    <div v-if="afficherModalEditionPiste" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" @click.self="afficherModalEditionPiste = false">
+      <div class="bg-amber-50 rounded-2xl max-w-lg w-full border-4 border-amber-900/40 flex flex-col relative">
+        <div class="relative overflow-hidden border-b-4 border-amber-900/20">
+          <div class="relative px-8 py-6 flex items-center justify-between bg-gradient-to-r from-amber-100 to-amber-50">
+            <h3 class="text-xl font-bold text-stone-900 font-manga">Modifier la piste</h3>
+            <button @click="afficherModalEditionPiste = false" class="text-stone-700 hover:text-stone-900 transition-colors text-4xl leading-none p-2">x</button>
+          </div>
+        </div>
+        <div class="p-6">
+          <form @submit.prevent="sauvegarderPiste" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">Titre *</label>
+              <input v-model="formulairePiste.title" type="text" required class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-3 transition-all outline-none text-stone-900 font-montserrat" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">Description</label>
+              <textarea v-model="formulairePiste.description" rows="3" class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-3 transition-all outline-none text-stone-900 font-montserrat" placeholder="Details..."></textarea>
+            </div>
+            <div class="flex gap-4 pt-4">
+              <button type="submit" class="flex-1 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-3 rounded-xl font-bold transition-all duration-300 text-amber-50 font-katana">Enregistrer</button>
+              <button type="button" @click="afficherModalEditionPiste = false" class="px-6 py-3 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30 rounded-xl font-semibold transition-all duration-300 text-stone-800 font-katana">Annuler</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </PageWrapper>
 </template>
 
@@ -376,9 +412,11 @@ const pistes = ref([])
 const afficherModalEdition = ref(false)
 const afficherModalEvent = ref(false)
 const afficherModalPiste = ref(false)
+const afficherModalEditionPiste = ref(false)
 const afficherSuggestions = ref(false)
 const rechercheLien = ref('')
 const eventEnEdition = ref(null)
+const pisteEnEdition = ref(null)
 
 const formulaireIntrigue = ref({
   titre: '',
@@ -393,6 +431,11 @@ const formulaireEvent = ref({
 })
 
 const nouvellePiste = ref({
+  title: '',
+  description: ''
+})
+
+const formulairePiste = ref({
   title: '',
   description: ''
 })
@@ -771,5 +814,32 @@ const creerEtLierPiste = async () => {
 
 const changeCharacter = () => {
   navigateTo('/')
+}
+
+const ouvrirModalEditionPiste = (piste) => {
+  pisteEnEdition.value = piste
+  formulairePiste.value = {
+    title: piste.title,
+    description: piste.description || ''
+  }
+  afficherModalEditionPiste.value = true
+}
+
+const sauvegarderPiste = async () => {
+  if (!pisteEnEdition.value?.id) return
+
+  const { error } = await client
+    .from('pistes')
+    .update({
+      title: formulairePiste.value.title,
+      description: formulairePiste.value.description
+    })
+    .eq('id', pisteEnEdition.value.id)
+
+  if (!error) {
+    await chargerPistes()
+    afficherModalEditionPiste.value = false
+    pisteEnEdition.value = null
+  }
 }
 </script>

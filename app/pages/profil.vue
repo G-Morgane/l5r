@@ -485,7 +485,7 @@ const experienceDepenseAuto = computed(() => {
     } 
   })
 
-  total -= 6
+  total -= 7
   
   return total
 })

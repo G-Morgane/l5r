@@ -12,7 +12,7 @@
       <div class="flex flex-wrap justify-between px-18">
         <NuxtLink
           to="/wiki/category-clans"
-          class="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+          class=" overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
         >
           <img
             src="/wiki/clans.png"
@@ -23,7 +23,7 @@
 
         <NuxtLink
           to="/wiki/category-lieux"
-          class="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+          class=" overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
         >
           <img
             src="/wiki/lieux.png"
@@ -34,7 +34,7 @@
 
         <NuxtLink
           to="/wiki/category-personnages"
-          class="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+          class=" overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
         >
           <img
             src="/wiki/personnages.png"
@@ -45,7 +45,7 @@
 
         <NuxtLink
           to="/wiki/category-autre"
-          class="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+          class=" overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
         >
           <img
             src="/wiki/autre.png"
@@ -55,19 +55,159 @@
         </NuxtLink>
       </div>
     </div>
+
+    <!-- Modal de création -->
+    <div v-if="afficherFormulaire" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" @click.self="fermerFormulaire">
+      <div class="bg-amber-50  max-w-2xl w-full border-4 border-amber-900/40 flex flex-col relative">
+        <!-- En-tête -->
+        <div class="relative overflow-hidden border-b-4 border-amber-900/20">
+          <div class="absolute inset-0 opacity-20" style="background-image: url('/cadre.png'); background-size: cover;"></div>
+          <div class="relative px-8 py-6 flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-stone-900 font-manga flex items-center gap-3">
+              <span class="text-xl">📝</span>
+              Créer une entrée wiki
+            </h3>
+            <button
+              @click="fermerFormulaire"
+              class="text-stone-700 hover:text-stone-900 transition-colors text-4xl leading-none p-2 hover:bg-amber-200/50 "
+              type="button"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="overflow-y-auto flex-1 p-8 bg-amber-50/80">
+          <form @submit.prevent="creerItem" class="space-y-6">
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">Nom *</label>
+              <input
+                v-model="nouvelItem.nom"
+                type="text"
+                required
+                class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700  px-4 py-3 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat text-lg"
+                placeholder="Nom de l'entrée..."
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-stone-800 font-montserrat">Catégorie *</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  v-for="(config, key) in categoryConfig"
+                  :key="key"
+                  type="button"
+                  @click="nouvelItem.categorie = key"
+                  class="px-4 py-3  border-2 transition-all font-montserrat flex items-center gap-2 justify-center"
+                  :class="nouvelItem.categorie === key
+                    ? 'border-stone-800 ring-2 ring-stone-400'
+                    : 'border-transparent hover:border-stone-300'"
+                  :style="{ backgroundColor: config.color }"
+                >
+                  <span>{{ config.emoji }}</span>
+                  <span class="text-stone-800">{{ config.name }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-4 pt-6 border-t-2 border-amber-900/20">
+              <button
+                type="submit"
+                :disabled="!nouvelItem.categorie"
+                class="flex-1 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-4  font-bold text-lg transition-all duration-300 text-amber-50 font-katana disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Créer
+              </button>
+              <button
+                type="button"
+                @click="fermerFormulaire"
+                class="px-8 py-4 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30  font-semibold transition-all duration-300 text-stone-800 font-katana"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </PageWrapper>
 </template>
 
 <script setup>
+const client = useSupabaseClient()
 const personnageActif = usePersonnageActif()
-const loading = ref(false)
+const route = useRoute()
+const router = useRouter()
 
-// Rediriger si pas de personnage actif
+const loading = ref(false)
+const afficherFormulaire = ref(false)
+const nouvelItem = ref({
+  nom: '',
+  categorie: ''
+})
+
+const categoryConfig = {
+  clans: { name: 'Clans', emoji: '⚔️', color: '#AAABCF' },
+  lieux: { name: 'Lieux', emoji: '🏯', color: '#ACD4CD' },
+  personnages: { name: 'Personnages', emoji: '👤', color: '#F1C5A9' },
+  autre: { name: 'Autre', emoji: '📦', color: '#CDAFCE' }
+}
+
+// Rediriger si pas de personnage actif, ou ouvrir le formulaire si paramètre create
 onMounted(() => {
   if (!personnageActif.value) {
     navigateTo('/')
+    return
+  }
+
+  // Si on a un paramètre create dans l'URL, ouvrir le formulaire
+  const createName = route.query.create
+  if (createName) {
+    nouvelItem.value.nom = decodeURIComponent(createName)
+    afficherFormulaire.value = true
   }
 })
+
+const creerItem = async () => {
+  if (!personnageActif.value?.id || !nouvelItem.value.categorie) return
+
+  // Créer le slug à partir du nom
+  const slug = nouvelItem.value.nom
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  const { error } = await client
+    .from('wiki_items')
+    .insert([{
+      personnage_id: personnageActif.value.id,
+      nom: nouvelItem.value.nom,
+      categorie: nouvelItem.value.categorie,
+      slug,
+      description: '',
+      tags: []
+    }])
+
+  if (!error) {
+    router.push(`/wiki/${slug}`)
+    fermerFormulaire()
+  }
+}
+
+const fermerFormulaire = () => {
+  afficherFormulaire.value = false
+  nouvelItem.value = {
+    nom: '',
+    categorie: ''
+  }
+  // Nettoyer l'URL du paramètre create
+  if (route.query.create) {
+    router.replace('/wiki')
+  }
+}
 
 const changeCharacter = () => {
   navigateTo('/')

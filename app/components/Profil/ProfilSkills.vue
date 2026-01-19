@@ -140,14 +140,17 @@ const getTraitValue = (traitName) => {
     'Intelligence': props.personnageData.intelligence,
     'Agilité': props.personnageData.agilite,
     'Réflexes': props.personnageData.reflexes,
-    'Intuition': props.personnageData.intuition
+    'Intuition': props.personnageData.intuition,
+    'Vide' : props.personnageData.vide
   }
   
   return traitMap[traitName] || ''
 }
 
 const calculerJet = (comp) => {
-  // This function should be passed as a prop or computed in the parent
-  return `${comp.rang}k${comp.rang}`
+  const traitValue = getTraitValue(comp.trait) || 0
+  const rollDice = comp.rang + traitValue
+  const keepDice = traitValue
+  return `${rollDice}g${keepDice}`
 }
 </script>

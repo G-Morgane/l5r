@@ -52,6 +52,12 @@
           description="Aventures et sessions"
         />
         <NavigationCard
+          link="/galerie"
+          emoji="🖼️"
+          title="Galerie"
+          description="Photos et souvenirs"
+        />
+        <NavigationCard
           link="/wiki"
           emoji="📚"
           title="Wiki"

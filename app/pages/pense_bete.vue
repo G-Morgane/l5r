@@ -16,14 +16,14 @@
       <!-- Canvas pour les notes en positionnement libre -->
       <div
         ref="canvasRef"
-        class="relative w-full bg-amber-900/5 rounded-xl border-2 border-dashed border-amber-800/30"
+        class="relative w-full bg-amber-900/5  border-2 border-dashed border-amber-800/30"
         style="min-height: 100vh;"
       >
         <!-- Notes en position absolue -->
         <div
           v-for="note in notes"
           :key="note.id"
-          class="absolute group flex flex-col border-4 bg-amber-50/60 shadow-lg"
+          class="absolute group flex flex-col border-2 bg-amber-50/60 shadow-lg"
           :style="{
             left: note.position_x + 'px',
             top: note.position_y + 'px',
@@ -35,14 +35,14 @@
         >
           <!-- Header de la note (drag handle) -->
           <div
-            class="drag-handle flex items-center justify-between px-3 py-2 cursor-move border-b-2 border-amber-800/50 shrink-0 bg-amber-100/50"
+            class="drag-handle flex items-center justify-between px-2 cursor-move border-b-2 border-amber-800/50 shrink-0 bg-amber-100/50"
             @mousedown="startDrag($event, note)"
           >
             <input
               v-model="note.title"
               @blur="sauvegarderNote(note)"
               @keyup.enter="($event.target as HTMLInputElement).blur()"
-              class="bg-transparent font-bold text-sm flex-1 outline-none placeholder:text-stone-500 cursor-text"
+              class="bg-transparent font-bold text-xs flex-1 outline-none placeholder:text-stone-500 cursor-text"
               placeholder="Titre..."
               @mousedown.stop
             />
@@ -53,7 +53,7 @@
                   v-for="color in colors"
                   :key="color"
                   @click="changerCouleur(note, color)"
-                  class="w-4 h-4 rounded-full border border-white/50 hover:scale-110 transition-transform"
+                  class="w-4 h-4  border border-white/50 hover:scale-110 transition-transform"
                   :class="getColorDot(color)"
                 ></button>
               </div>
@@ -76,17 +76,17 @@
               @blur="finishEditing(note)"
               @keydown.escape="finishEditing(note)"
               ref="textareaRef"
-              class="w-full h-full p-3 bg-transparent outline-none font-montserrat text-sm resize-none"
+              class="w-full h-full p-2 bg-transparent outline-none font-montserrat text-xs resize-none"
               placeholder="Écrivez ici en Markdown..."
             ></textarea>
             <!-- Mode vue -->
             <div
               v-else
               @click="startEditing(note)"
-              class="w-full h-full p-3 overflow-auto cursor-text"
+              class="w-full h-full p-2 overflow-auto cursor-text text-xs"
             >
               <MarkdownPreview v-if="note.content" :content="note.content" />
-              <span v-else class="text-stone-400 font-montserrat text-sm italic">Cliquez pour écrire...</span>
+              <span v-else class="text-stone-400 font-montserrat text-xs italic">Cliquez pour écrire...</span>
             </div>
           </div>
 
@@ -103,7 +103,7 @@
 
         <!-- Message si aucune note -->
         <div v-if="notes.length === 0 && !loading" class="absolute inset-0 flex items-center justify-center">
-          <div class="rounded-xl p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80 max-w-md">
+          <div class=" p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80 max-w-md">
             <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
             <div class="absolute inset-0 bg-amber-50/30"></div>
             <div class="relative z-10">

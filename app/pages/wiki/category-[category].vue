@@ -12,14 +12,14 @@
         <!-- En-tête avec bouton retour -->
         <div class="mb-8 flex gap-4 items-center px-12">
           <div class="relative flex-1">
-            <div class="relative rounded-xl overflow-hidden">
+            <div class="relative  overflow-hidden">
               <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
               <div class="absolute inset-0 bg-amber-50/30"></div>
               <input 
                 v-model="searchQuery"
                 type="text"
                 :placeholder="`🔍 Rechercher dans ${categoryName}...`"
-                class="relative z-10 w-full bg-transparent border-2 border-amber-800/60 focus:border-amber-700 rounded-xl px-4 py-2 pr-10 transition-all outline-none text-stone-900 placeholder:text-stone-500 font-montserrat text-sm"
+                class="relative z-10 w-full bg-transparent border-2 border-amber-800/60 focus:border-amber-700  px-4 py-2 pr-10 transition-all outline-none text-stone-900 placeholder:text-stone-500 font-montserrat text-sm"
               />
             </div>
             <button 
@@ -36,7 +36,7 @@
         <!-- Liste des entrées -->
         <div class="flex-1 overflow-y-auto">
           <div v-if="itemsFiltres.length === 0 && searchQuery" class="text-center py-12">
-            <div class="rounded-xl p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80">
+            <div class=" p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80">
               <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
               <div class="absolute inset-0 bg-amber-50/30"></div>
               <div class="relative z-10">
@@ -46,7 +46,7 @@
             </div>
           </div>
           <div v-else-if="items.length === 0" class="text-center py-12">
-            <div class="rounded-xl p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80">
+            <div class=" p-8 border-2 border-amber-800/60 ring-4 ring-amber-900/30 relative overflow-hidden bg-white/80">
               <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
               <div class="absolute inset-0 bg-amber-50/30"></div>
               <div class="relative z-10">
@@ -60,7 +60,8 @@
               v-for="item in itemsFiltres"
               :key="item.id"
               :to="`/wiki/${item.slug}`"
-              class="px-3 py-2 rounded-lg bg-amber-50/20 hover:bg-amber-100/50 transition-colors border border-amber-800/20 hover:border-amber-700 text-center"
+              class="px-3 py-2  transition-colors border-2 border-transparent hover:border-stone-400 text-center hover:opacity-80"
+              :style="{ backgroundColor: categoryColor }"
             >
               <h3 class="text-sm font-bold text-stone-900 font-manga truncate">{{ item.nom }}</h3>
             </NuxtLink>
@@ -69,7 +70,7 @@
 
         <!-- Modal formulaire -->
         <div v-if="afficherFormulaire" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" @click.self="fermerFormulaire">
-          <div class="bg-amber-50 rounded-2xl max-w-2xl w-full border-4 border-amber-900/40 flex flex-col relative">
+          <div class="bg-amber-50  max-w-2xl w-full border-4 border-amber-900/40 flex flex-col relative">
             <!-- En-tête -->
             <div class="relative overflow-hidden border-b-4 border-amber-900/20">
               <div class="absolute inset-0 opacity-20" style="background-image: url('/cadre.png'); background-size: cover;"></div>
@@ -80,7 +81,7 @@
                 </h3>
                 <button 
                   @click="fermerFormulaire" 
-                  class="text-stone-700 hover:text-stone-900 transition-colors text-4xl leading-none p-2 hover:bg-amber-200/50 rounded-lg"
+                  class="text-stone-700 hover:text-stone-900 transition-colors text-4xl leading-none p-2 hover:bg-amber-200/50 "
                   type="button"
                 >
                   ×
@@ -97,7 +98,7 @@
                     v-model="nouvelItem.nom" 
                     type="text" 
                     required 
-                    class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-3 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat text-lg" 
+                    class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700  px-4 py-3 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat text-lg" 
                     :placeholder="`Nom du ${categoryName.toLowerCase().slice(0, -1)}...`"
                   />
                 </div>
@@ -105,14 +106,14 @@
                 <div class="flex gap-4 pt-6 border-t-2 border-amber-900/20">
                   <button 
                     type="submit" 
-                    class="flex-1 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 text-amber-50 font-katana"
+                    class="flex-1 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-4  font-bold text-lg transition-all duration-300 text-amber-50 font-katana"
                   >
                     Créer
                   </button>
                   <button 
                     type="button" 
                     @click="fermerFormulaire" 
-                    class="px-8 py-4 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30 rounded-xl font-semibold transition-all duration-300 text-stone-800 font-katana"
+                    class="px-8 py-4 bg-stone-200 hover:bg-stone-300 border-2 border-amber-900/30  font-semibold transition-all duration-300 text-stone-800 font-katana"
                   >
                     Annuler
                   </button>
@@ -144,11 +145,13 @@ const nouvelItem = ref({
 const category = computed(() => route.params.category || 'clans')
 
 const categoryConfig = {
-  clans: { name: 'Clans', emoji: '⚔️' },
-  lieux: { name: 'Lieux', emoji: '🏯' },
-  personnages: { name: 'Personnages', emoji: '👤' },
-  autre: { name: 'Autre', emoji: '📦' }
+  clans: { name: 'Clans', emoji: '⚔️', color: '#AAABCF' },
+  lieux: { name: 'Lieux', emoji: '🏯', color: '#ACD4CD' },
+  personnages: { name: 'Personnages', emoji: '👤', color: '#F1C5A9' },
+  autre: { name: 'Autre', emoji: '📦', color: '#CDAFCE' }
 }
+
+const categoryColor = computed(() => categoryConfig[category.value]?.color || '#CDAFCE')
 
 const categoryName = computed(() => categoryConfig[category.value]?.name || 'Catégorie')
 const categoryEmoji = computed(() => categoryConfig[category.value]?.emoji || '📑')

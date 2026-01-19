@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen relative overflow-hidden">
     <!-- Fond image japonaise -->
-    <div class="absolute inset-0">
+    <div v-if="useRoute().fullPath.includes('profil') && !loading" class="absolute inset-0">
       <!-- Partie supérieure -->
       <div class="absolute top-0 left-0 right-0 h-full overflow-hidden" style="background-size: 100% 100%;" v-if="!customBackground">
         <img
@@ -19,6 +19,17 @@
         />
       </div>
       <slot v-if="customBackground" name="background" />
+      <div class="absolute inset-0 bg-black/10"></div>
+    </div>
+    <div v-else class="absolute inset-0">
+      <!-- Partie supérieure -->
+      <div class="absolute top-0 left-0 right-0 h-full overflow-hidden" style="background-size: 100% 100%;" v-if="!customBackground">
+        <img
+          src="/fond_long.png"
+          alt="Japanese room background top"
+          class="w-full h-full object-cover object-top"
+        />
+      </div>
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 

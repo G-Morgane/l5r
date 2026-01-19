@@ -6,7 +6,7 @@
         <div class="flex flex-row flex-wrap gap-4 justify-between">
           <div>
             <div class="flex items-center gap-2 mb-0.5">
-              <label class="text-xs font-bold font-sigokae">Honneur</label>
+              <label class="text-xs font-bold font-manga">Honneur ({{ personnageData.honneur }})</label>
               <button
                 @mouseenter="showTooltip('honneur'); updateTooltipPosition($event)"
                 @mouseleave="hideTooltip"
@@ -32,7 +32,7 @@
           <div>
             <div class="flex items-center gap-2 mb-0.5">
               
-              <label class="text-xs font-bold font-sigokae">Gloire</label>
+              <label class="text-xs font-bold font-manga">Gloire ({{ personnageData.gloire }})</label>
               <button
                 @mouseenter="showTooltip('gloire'); updateTooltipPosition($event)"
                 @mouseleave="hideTooltip"
@@ -52,7 +52,7 @@
           </div>
           <div>
             <div class="flex items-center gap-2 mb-0.5">
-              <label class="text-xs font-bold font-sigokae">Statut</label>
+              <label class="text-xs font-bold font-manga">Statut ({{ personnageData.statut_social }})</label>
               <button
                 @mouseenter="showTooltip('statut'); updateTooltipPosition($event)"
                 @mouseleave="hideTooltip"
@@ -72,7 +72,7 @@
           </div>
           <div>
             <div class="flex items-center gap-2 mb-0.5">
-              <label class="text-xs font-bold font-sigokae">Souillure</label>
+              <label class="text-xs font-bold font-manga">Souillure ({{ personnageData.souillure }})</label>
               <button
                 @mouseenter="showTooltip('souillure'); updateTooltipPosition($event)"
                 @mouseleave="hideTooltip"

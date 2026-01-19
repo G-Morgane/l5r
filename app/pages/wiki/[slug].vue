@@ -61,7 +61,7 @@
             </div>
 
             <div v-else>
-              <div class="prose max-w-none max-h-[95vh] overflow-y-auto bg-black/20 rounded-lg p-4">
+              <div class="prose max-w-none max-h-[95vh] overflow-y-auto bg-black/20-lg p-4">
                 <div class="space-y-4">
                   <RichTextEditor v-model="description" />
                 </div>
@@ -83,13 +83,13 @@
                   @keyup.enter="ajouterTag"
                   @input="filtrerSuggestions"
                   @focus="afficherSuggestions = true"
-                  class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700 rounded-xl px-4 py-2 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat shadow-sm" 
+                  class="w-full bg-white border-2 border-amber-900/30 focus:border-amber-700-xl px-4 py-2 transition-all outline-none text-stone-900 placeholder:text-stone-400 font-montserrat shadow-sm" 
                   placeholder="Links..."
                 />
                 <!-- Suggestions dropdown -->
                 <div 
                   v-if="afficherSuggestions && suggestionsFiltrees.length > 0"
-                  class="absolute z-50 w-full mt-1 bg-white border-2 border-amber-900/30 rounded-xl shadow-2xl max-h-60 overflow-y-auto"
+                  class="absolute z-50 w-full mt-1 bg-white border-2 border-amber-900/30-xl shadow-2xl max-h-60 overflow-y-auto"
                 >
                   <button
                     v-for="(suggestion, index) in suggestionsFiltrees"
@@ -117,10 +117,8 @@
                   v-for="(tag, index) in item.tags"
                   :key="index"
                   @click="handleTagClick(tag)"
-                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all group cursor-pointer"
-                  :style="{ backgroundColor: '#EFB6A6' }"
-                  onMouseOver="this.style.backgroundColor='#E5B999'"
-                  onMouseOut="this.style.backgroundColor='#EFB6A6'"
+                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all group cursor-pointer hover:opacity-80"
+                  :style="{ backgroundColor: getTagColor(tag) }"
                 >
                   {{ emojiParCategorie[getWikiItemByName(tag)?.categorie] || '🔗' }} {{ tag }}
                   <button
@@ -142,10 +140,8 @@
                   v-for="itemLie in itemsLies"
                   :key="itemLie.id"
                   :to="`/wiki/${itemLie.slug}`"
-                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all border"
-                  :style="{ backgroundColor: '#EFB6A6', borderColor: '#EFB6A6' }"
-                  onMouseOver="this.style.backgroundColor='#EFB6A6'"
-                  onMouseOut="this.style.backgroundColor='#F1C5A9'"
+                  class="inline-flex items-center gap-2 px-3 py-1 text-stone-800 font-montserrat text-sm font-medium transition-all hover:opacity-80"
+                  :style="{ backgroundColor: categoryColors[itemLie.categorie] || '#CDAFCE' }"
                 >
                   <span>{{ emojiParCategorie[itemLie.categorie] || '📦' }}</span>
                   {{ itemLie.nom }}
@@ -213,6 +209,21 @@ const emojiParCategorie = {
   'personnages': '👤',
   'clans': '⚔️',
   'autre': '📦'
+}
+
+const categoryColors = {
+  'lieux': '#ACD4CD',
+  'personnages': '#F1C5A9',
+  'clans': '#AAABCF',
+  'autre': '#CDAFCE'
+}
+
+const getTagColor = (tagName) => {
+  const wikiItem = getWikiItemByName(tagName)
+  if (wikiItem) {
+    return categoryColors[wikiItem.categorie] || '#CDAFCE'
+  }
+  return '#CDAFCE'
 }
 
 // Rediriger si pas de personnage actif
