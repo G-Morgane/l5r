@@ -1,7 +1,7 @@
 <template>
   <div v-if="personnage" class="rounded-xl py-24 px-20 relative overflow-hidden w-full max-w-7xl mx-auto" style="min-height: 320px;">
     <div class="absolute inset-0" style="background-image: url('/parchemin_header.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"></div>
-    
+
     <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" style="position:relative; top:-50px;">
       <div class="flex items-center gap-10">
         <div class="relative flex items-center justify-center w-40 h-40">
@@ -28,8 +28,19 @@
           </div>
         </div>
         <div>
-          <h2 class="text-4xl font-black text-stone-900 mb-2 font-sakurata">{{ personnage.nom }}</h2>
-          <p class="text-red-800 font-bold text-lg font-montserrat">{{ personnage.clan || 'Sans clan' }} • {{ personnage.famille || 'Sans famille' }}</p>
+          <div class="flex items-center gap-3">
+            <h2 class="text-4xl font-black text-stone-900 font-sakurata">{{ personnage.nom }}</h2>
+            <button
+              @click="$emit('edit')"
+              class="p-2 text-stone-600 hover:text-red-800 hover:bg-amber-100/50 rounded-full transition-colors"
+              title="Modifier le personnage"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </button>
+          </div>
+          <p class="text-red-800 font-bold text-lg font-montserrat mt-2">{{ personnage.clan || 'Sans clan' }} • {{ personnage.famille || 'Sans famille' }}</p>
           <p class="text-stone-600 text-sm mt-1 font-montserrat">{{ personnage.ecole || 'Sans école' }} • Rang {{ personnage.rang }}</p>
         </div>
       </div>
@@ -109,5 +120,5 @@ defineProps({
   }
 })
 
-defineEmits(['deselect'])
+defineEmits(['deselect', 'edit'])
 </script>

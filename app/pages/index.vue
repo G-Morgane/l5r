@@ -74,7 +74,17 @@
       <!-- En-tête personnage style parchemin -->
       <PersonnageHeader
         :personnage="personnageActif"
-        @deselect="() => navigateTo('/')"
+        @deselect="deselectionnerPersonnage"
+        @edit="ouvrirEdition"
+      />
+
+      <!-- Formulaire d'édition du personnage actif -->
+      <PersonnageForm
+        v-if="afficherFormulaireEdition"
+        :clans="clans"
+        :personnage="personnageActif"
+        @submit="modifierPersonnage"
+        @close="afficherFormulaireEdition = false"
       />
     </div>
   </PageWrapper>
@@ -86,14 +96,8 @@ const personnageActif = usePersonnageActif()
 
 const personnages = ref([])
 const afficherFormulaire = ref(false)
+const afficherFormulaireEdition = ref(false)
 const loading = ref(true)
-const nouveauPerso = ref({
-  nom: '',
-  clan: '',
-  famille: '',
-  ecole: '',
-  description: ''
-})
 
 // Clans et familles de L5R
 const clans = [
@@ -107,16 +111,6 @@ const clans = [
   { nom: 'Mante', familles: ['Yoritomo', 'Moshi', 'Tsuruchi'] },
   { nom: 'Impérial', familles: ['Miya', 'Otomo', 'Seppun'] }
 ]
-
-const famillesDisponibles = computed(() => {
-  const clanSelectionne = clans.find(c => c.nom === nouveauPerso.value.clan)
-  return clanSelectionne ? clanSelectionne.familles : []
-})
-
-// Réinitialiser la famille quand on change de clan
-watch(() => nouveauPerso.value.clan, () => {
-  nouveauPerso.value.famille = ''
-})
 
 // Charger les personnages
 const chargerPersonnages = async () => {
@@ -137,17 +131,47 @@ const selectionnerPersonnage = (perso) => {
   personnageActif.value = perso
 }
 
-const creerPersonnage = async () => {
+const deselectionnerPersonnage = () => {
+  personnageActif.value = null
+  navigateTo('/')
+}
+
+const creerPersonnage = async (formData) => {
   const { data, error } = await client
     .from('personnages')
-    .insert([nouveauPerso.value])
+    .insert([formData])
     .select()
     .single()
 
   if (!error && data) {
     personnages.value.unshift(data)
-    nouveauPerso.value = { nom: '', clan: '', famille: '', ecole: '', description: '' }
     afficherFormulaire.value = false
+  }
+}
+
+const ouvrirEdition = () => {
+  afficherFormulaireEdition.value = true
+}
+
+const modifierPersonnage = async (formData) => {
+  if (!personnageActif.value) return
+
+  const { data, error } = await client
+    .from('personnages')
+    .update(formData)
+    .eq('id', personnageActif.value.id)
+    .select()
+    .single()
+
+  if (!error && data) {
+    // Mettre à jour le personnage actif
+    personnageActif.value = data
+    // Mettre à jour dans la liste des personnages
+    const index = personnages.value.findIndex(p => p.id === data.id)
+    if (index !== -1) {
+      personnages.value[index] = data
+    }
+    afficherFormulaireEdition.value = false
   }
 }
 

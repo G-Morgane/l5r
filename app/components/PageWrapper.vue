@@ -30,6 +30,7 @@
           class="w-full h-full object-cover object-top"
         />
       </div>
+      <slot v-if="customBackground" name="background" />
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 

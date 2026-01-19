@@ -485,7 +485,9 @@ const experienceDepenseAuto = computed(() => {
     } 
   })
 
-  total -= 7
+if(personnageData.value.nom === 'Shiba Shizuku'){
+    total -= 7
+}
   
   return total
 })
