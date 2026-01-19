@@ -44,7 +44,18 @@
           <p class="text-stone-600 text-sm mt-1 font-montserrat">{{ personnage.ecole || 'Sans école' }} • Rang {{ personnage.rang }}</p>
         </div>
       </div>
-      <BackButton @click="$emit('deselect')">Changer de personnage</BackButton>
+      <div class="flex flex-col gap-2">
+        <BackButton @click="$emit('deselect')">Changer de personnage</BackButton>
+        <button
+          @click="handleLogout"
+          class="px-4 py-2 text-sm text-stone-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors font-montserrat flex items-center justify-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v2a1 1 0 102 0V9z" clip-rule="evenodd" />
+          </svg>
+          Déconnexion
+        </button>
+      </div>
     </div>
 
     <!-- Cartes de navigation style parchemin -->
@@ -113,6 +124,8 @@
 <script setup>
 import NavigationCard from './NavigationCard.vue'
 
+const client = useSupabaseClient()
+
 defineProps({
   personnage: {
     type: Object,
@@ -121,4 +134,9 @@ defineProps({
 })
 
 defineEmits(['deselect', 'edit'])
+
+const handleLogout = async () => {
+  await client.auth.signOut()
+  navigateTo('/login')
+}
 </script>
