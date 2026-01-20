@@ -54,6 +54,60 @@
           />
         </NuxtLink>
       </div>
+
+      <!-- Barre de recherche et liste des entrées -->
+      <div class="mt-12 px-18">
+        <!-- Searchbar -->
+        <div class="relative mb-6">
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-0" style="background-image: url('/cadre.png'); background-size: 250%; background-position: center;"></div>
+            <div class="absolute inset-0 bg-amber-50/30"></div>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="🔍 Rechercher dans le wiki..."
+              class="relative z-10 w-full bg-transparent border-2 border-amber-800/60 focus:border-amber-700 px-4 py-2 pr-10 transition-all outline-none text-stone-900 placeholder:text-stone-500 font-montserrat text-sm"
+            />
+          </div>
+          <button
+            v-if="searchQuery"
+            @click="searchQuery = ''"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-900 transition-colors text-xl font-bold z-20"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Liste des entrées -->
+        <div class="bg-amber-50/80 border-2 border-amber-900/30 p-4">
+          <h3 class="text-lg font-bold text-stone-800 font-manga mb-4 flex items-center gap-2">
+            <span>📚</span>
+            Toutes les entrées
+            <span class="text-sm font-normal text-stone-500">({{ itemsFiltres.length }})</span>
+          </h3>
+
+          <div v-if="itemsFiltres.length > 0" class="grid grid-cols-5 gap-2 max-h-[40vh] overflow-y-auto pr-2">
+            <NuxtLink
+              v-for="item in itemsFiltres"
+              :key="item.id"
+              :to="`/wiki/${item.slug}`"
+              class="px-2 py-1.5 border-2 border-transparent hover:border-stone-400 transition-all font-montserrat text-xs font-bold text-stone-800 truncate flex items-center gap-1"
+              :style="{ backgroundColor: categoryConfig[item.categorie]?.color || '#e5e5e5' }"
+            >
+              <span class="text-xs">{{ categoryConfig[item.categorie]?.emoji }}</span>
+              <span class="truncate">{{ item.nom }}</span>
+            </NuxtLink>
+          </div>
+
+          <div v-else-if="searchQuery" class="text-stone-500 text-center py-8 font-montserrat">
+            Aucun résultat pour "{{ searchQuery }}"
+          </div>
+
+          <div v-else class="text-stone-500 text-center py-8 font-montserrat">
+            Aucune entrée dans le wiki pour le moment.
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal de création -->
@@ -142,6 +196,8 @@ const router = useRouter()
 
 const loading = ref(false)
 const afficherFormulaire = ref(false)
+const searchQuery = ref('')
+const items = ref([])
 const nouvelItem = ref({
   nom: '',
   categorie: ''
@@ -154,12 +210,40 @@ const categoryConfig = {
   autre: { name: 'Autre', emoji: '📦', color: '#CDAFCE' }
 }
 
+// Filtrer les items selon la recherche
+const itemsFiltres = computed(() => {
+  if (!searchQuery.value.trim()) return items.value
+
+  const query = searchQuery.value.toLowerCase()
+  return items.value.filter(item => {
+    return item.nom?.toLowerCase().includes(query) ||
+           item.description?.toLowerCase().includes(query)
+  })
+})
+
+// Charger les items du wiki
+const chargerItems = async () => {
+  if (!personnageActif.value?.id) return
+
+  loading.value = true
+  const { data } = await client
+    .from('wiki_items')
+    .select('*')
+    .eq('personnage_id', personnageActif.value.id)
+    .order('nom', { ascending: true })
+
+  items.value = data || []
+  loading.value = false
+}
+
 // Rediriger si pas de personnage actif, ou ouvrir le formulaire si paramètre create
-onMounted(() => {
+onMounted(async () => {
   if (!personnageActif.value) {
     navigateTo('/')
     return
   }
+
+  await chargerItems()
 
   // Si on a un paramètre create dans l'URL, ouvrir le formulaire
   const createName = route.query.create

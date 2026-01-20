@@ -91,20 +91,6 @@
               </div>
             </div>
 
-            <!-- Filtres par tags -->
-            <div v-if="filterableTags.length > 0" class="flex flex-wrap gap-3 font-montserrat">
-              <span class="text-sm font-medium text-stone-700 self-center">Tags :</span>
-              <button
-                v-for="tag in filterableTags"
-                :key="tag.id"
-                @click="toggleTagFilter(tag.id)"
-                :class="activeTagFilters.includes(tag.id) ? 'text-black scale-110 ring-2 ring-amber-500' : 'text-black'"
-                class="px-3 py-1 text-sm font-medium transition-all font-sigokae"
-                :style="{ backgroundColor: tag.color, opacity: activeTagFilters.includes(tag.id) ? '1' : '0.6' }"
-              >
-                {{ tag.name }}
-              </button>
-            </div>
 
             <!-- Barre de recherche et bouton ajout -->
             <div class="flex items-center gap-2">
